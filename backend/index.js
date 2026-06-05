@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Bem-vindo ao GymSync API!',
     serverTime: new Date().toISOString(),
-    status: 'OK'
+    status: 'OK',
   })
 })
 
