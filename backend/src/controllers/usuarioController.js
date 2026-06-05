@@ -7,23 +7,23 @@ export const registrar = async (req, res) => {
   try {
     const { nome, email, senha } = req.body
 
-    // 1. Verificar se o email já existe
+    // Verificar se o email já existe
     const usuarioExistente = await Usuario.findOne({ email })
     if (usuarioExistente) {
       return res.status(400).json({ mensagem: 'Email já cadastrado.' })
     }
 
-    // 2. Criptografar a senha (10 = nível de complexidade do hash)
+    // Criptografar a senha (10 = nível de complexidade do hash)
     const senhaHash = await bcrypt.hash(senha, 10)
 
-    // 3. Criar o usuário no banco
+    // Criar o usuário no banco
     const novoUsuario = await Usuario.create({
       nome,
       email,
       senha: senhaHash,
     })
 
-    // 4. Responder sem expor a senha
+    // Responder sem expor a senha
     res.status(201).json({
       mensagem: 'Usuário criado com sucesso.',
       usuario: {
@@ -44,23 +44,23 @@ export const entrar = async (req, res) => {
   try {
     const { email, senha } = req.body
 
-    // 1. Verificar se o usuário existe
+    // Verificar se o usuário existe
     const usuario = await Usuario.findOne({ email })
     if (!usuario) {
       return res.status(401).json({ mensagem: 'Email ou senha inválidos.' })
     }
 
-    // 2. Comparar a senha com o hash salvo
+    // Comparar a senha com o hash salvo
     const senhaCorreta = await bcrypt.compare(senha, usuario.senha)
     if (!senhaCorreta) {
       return res.status(401).json({ mensagem: 'Email ou senha inválidos.' })
     }
 
-    // 3. Gerar o token JWT
+    // Gerar o token JWT
     const token = jwt.sign(
       { id: usuario._id }, // payload: o que vai dentro do token
       process.env.JWT_SECRET, // chave secreta do .env
-      { expiresIn: '7d' }, // token expira em 7 dias
+      { expiresIn: '7d' }, // token/autenticação dura 7 dias
     )
 
     res.status(200).json({
