@@ -39,8 +39,8 @@ export const registrar = async (req, res) => {
   }
 }
 
-// POST /usuarios/entrar
-export const entrar = async (req, res) => {
+// POST /usuarios/login
+export const login = async (req, res) => {
   try {
     const { email, senha } = req.body
 
