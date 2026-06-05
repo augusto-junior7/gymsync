@@ -18,6 +18,7 @@ const usuarioSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 8, // senha deve ter pelo menos 8 caracteres
+      select: false
     },
   },
   {

@@ -45,7 +45,7 @@ export const login = async (req, res) => {
     const { email, senha } = req.body
 
     // Verificar se o usuário existe
-    const usuario = await Usuario.findOne({ email })
+    const usuario = await Usuario.findOne({ email }).select('+senha');
     if (!usuario) {
       return res.status(401).json({ mensagem: 'Email ou senha inválidos.' })
     }
@@ -78,3 +78,46 @@ export const login = async (req, res) => {
       .json({ mensagem: 'Erro ao fazer login.', erro: erro.message })
   }
 }
+
+export const atualizar = async (req, res) => {
+  try{
+    const usuarioLogado = req.usuarioId; //  Pegando o usuario logado
+    const camposAtualizaveis = ['nome', 'email', 'senha']
+    const dadosAtualizar = {}
+
+    // Montando o obj de dadosAtualizar
+    camposAtualizaveis.forEach((campo) => {
+      if (req.body[campo]) { // verificando se o body tem o campo
+        dadosAtualizar[campo] = req.body[campo] // insirindo os campos que vieram
+      }
+    });
+      
+      // Se não vier nenhum campo, envia uma res de erro
+      if (Object.keys(dadosAtualizar).length === 0) {
+        return res.status(400).json({mensagem: 'Necessário ao menos um campo'})
+      }
+
+      // Verificar se o email já existe
+      if (dadosAtualizar.email) {
+        const emailEmUso = await Usuario.findOne({email: dadosAtualizar.email});
+
+        if (emailEmUso) {
+          return res.status(400).json({mensagem: 'Email já cadastrado'})
+        }
+      }
+
+      // criptografando nova senha
+      if (dadosAtualizar.senha) {
+        const novasenha = await bcrypt.hash(dadosAtualizar.senha, 10);
+        dadosAtualizar.senha = novasenha;
+      }
+      
+      // Atualizamos os campos que recebemos do usuario no banco de dados
+      const updateUsuario = await Usuario.findByIdAndUpdate(usuarioLogado, dadosAtualizar)
+      res.status(200).json({mensagem: 'Atualização realizado com sucesso.'});
+    
+    }catch(erro) {
+      return res.status(500).json({mensagem: 'Erro ao realizar atualização.', erro: erro.message})
+    }
+  }
+
