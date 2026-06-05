@@ -1,12 +1,28 @@
-import express from "express";
-import conectarBanco from "./src/database/db.js";
-import dotenv from "dotenv";
+import express from 'express'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import conectarBanco from './src/database/db.js'
+import usuarioRoutes from './src/routes/usuario.routes.js'
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
-const port = 3000;
+const app = express()
+const port = 3000
 
-conectarBanco();
+app.use(cors())
+app.use(express.json())
 
-app.listen(port, () => console.log(`Servidor ativo na porta ${port}`));
+conectarBanco()
+
+// Rotas
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Bem-vindo ao GymSync API!',
+    serverTime: new Date().toISOString(),
+    status: 'OK'
+  })
+})
+
+app.use('/usuarios', usuarioRoutes)
+
+app.listen(port, () => console.log(`Servidor ativo na porta ${port}`))

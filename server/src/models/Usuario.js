@@ -1,18 +1,30 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose'
 
-const usuarioSchema = new mongoose.Schema({
-  nome: {
-    type: String,
-    required: true,
+const usuarioSchema = new mongoose.Schema(
+  {
+    nome: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    senha: {
+      type: String,
+      required: true,
+      minlength: 8, // senha deve ter pelo menos 8 caracteres
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true, // 1 conta por email
+  {
+    timestamps: true, // cria createdAt e updatedAt automaticamente
   },
-  senha: {
-    type: String,
-    required: true,
-    minlength: [3], // A senha deve ter pelo menos 3 caracteres
-  },
-});
+)
+
+const Usuario = mongoose.model('Usuario', usuarioSchema)
+
+export default Usuario
