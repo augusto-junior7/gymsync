@@ -41,15 +41,15 @@ export default function Login() {
                 >
                   Senha
                 </Label>
-                <a
+                {/*<a
                   href="#"
                   className="text-xs font-bold text-[#cafd00] hover:text-[#beee00] transition-colors uppercase"
                 >
                   Esqueceu?
-                </a>
+                </a>*/}
               </div>
               <Input
-                id="password" 
+                id="password"
                 type="password"
                 placeholder="••••••••"
                 className="h-14 bg-accent/50 border-none rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
