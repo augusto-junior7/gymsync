@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-// 1. Importando os ícones da biblioteca Lucide
 import { LayoutDashboard, Compass, Dumbbell, User, Bell } from 'lucide-react'
 
 export default function Navbar() {
   const location = useLocation()
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 
-  // 2. Perfil adicionado ao array para facilitar a reordenação em Desktop/Mobile
   const navLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Explorar', path: '/explorar', icon: Compass },
