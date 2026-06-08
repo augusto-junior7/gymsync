@@ -34,7 +34,7 @@ export default function Login() {
 
       const token = response.data.token
       localStorage.setItem('gymsync_token', token)
-      navigate('/perfil')
+      navigate('/dashboard')
   
     } catch (error) {
       if (error.response) {
