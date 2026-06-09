@@ -17,7 +17,7 @@ export default function Home() {
           <Link to="/login">
             <Button
               variant="ghost"
-              className="text-foreground hover:text-[#cafd00] font-bold"
+              className="text-foreground font-bold"
             >
               Entrar
             </Button>
@@ -32,7 +32,7 @@ export default function Home() {
 
       {/* Seção Principal (Hero Section) */}
       <section className="flex-1 flex flex-col items-center justify-center text-center px-6 relative z-10 max-w-4xl mx-auto space-y-8">
-        <h2 className="text-5xl md:text-7xl font-headline font-black tracking-tight text-foreground">
+        <h2 className="text-5xl md:text-7xl font-headline font-black tracking-tight text-white">
           Sincronize seus treinos. <br />
           <span className="text-[#cafd00] italic">Supere seus limites.</span>
         </h2>
@@ -52,7 +52,7 @@ export default function Home() {
           <Link to="/login" className="w-full sm:w-auto">
             <Button
               variant="outline"
-              className="w-full sm:w-auto h-14 px-8 border-2 border-muted-foreground/30 hover:border-[#cafd00] hover:text-[#cafd00] hover:bg-transparent text-foreground font-headline font-bold text-lg tracking-widest uppercase rounded-xl transition-all"
+              className="w-full sm:w-auto h-14 px-8 border-2 border-muted-foreground/30 hover:border-[#cafd00] hover:text-[#cafd00] hover:bg-transparent text-white font-headline font-bold text-lg tracking-widest uppercase rounded-xl transition-all"
             >
               Já tenho conta
             </Button>
