@@ -16,7 +16,7 @@ const exercicioSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ['iniciante', 'intermediario', 'avançado']
+      enum: ['beginner', 'intermediate', 'expert']
     },
     mecanica: {
       type: String,
@@ -35,7 +35,7 @@ const exercicioSchema = new mongoose.Schema(
         default: [],
     },
     instrucoes: {
-        type: String,
+        type: [String],
         required: true,
     }
   },
@@ -44,6 +44,6 @@ const exercicioSchema = new mongoose.Schema(
   },
 );
 
-const Usuario = mongoose.model("Exercicio", exercicioSchema);
+const Exercicio = mongoose.model("Exercicio", exercicioSchema);
 
 export default Exercicio;
