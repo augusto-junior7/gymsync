@@ -5,12 +5,19 @@ import Usuario from "../models/Usuario.js";
 // POST /usuarios/registrar
 export const registrar = async (req, res) => {
   try {
-    const { nome, email, senha } = req.body;
+    const { nome, username, email, senha } = req.body;
 
-    // Verificar se o email já existe
-    const usuarioExistente = await Usuario.findOne({ email });
+    // Verificar se o email ou username já existe
+    const usuarioExistente = await Usuario.findOne({
+      $or: [{ email }, { username }],
+    });
     if (usuarioExistente) {
-      return res.status(400).json({ mensagem: "Email já cadastrado." });
+      if (usuarioExistente.email === email) {
+        return res.status(400).json({ mensagem: "Email já cadastrado." });
+      }
+      if (usuarioExistente.username === username) {
+        return res.status(400).json({ mensagem: "Nome de usuário já em uso." });
+      }
     }
 
     // Criptografar a senha (10 = nível de complexidade do hash)
@@ -19,6 +26,7 @@ export const registrar = async (req, res) => {
     // Criar o usuário no banco
     const novoUsuario = await Usuario.create({
       nome,
+      username,
       email,
       senha: senhaHash,
     });
@@ -29,6 +37,7 @@ export const registrar = async (req, res) => {
       usuario: {
         id: novoUsuario._id,
         nome: novoUsuario.nome,
+        username: novoUsuario.username,
         email: novoUsuario.email,
       },
     });
@@ -42,18 +51,24 @@ export const registrar = async (req, res) => {
 // POST /usuarios/login
 export const login = async (req, res) => {
   try {
-    const { email, senha } = req.body;
+    const { identificacao, senha } = req.body;
 
-    // Verificar se o usuário existe
-    const usuario = await Usuario.findOne({ email }).select("+senha");
+    // Verificar se o usuário existe por email ou username
+    const usuario = await Usuario.findOne({
+      $or: [{ email: identificacao }, { username: identificacao }],
+    }).select("+senha");
     if (!usuario) {
-      return res.status(401).json({ mensagem: "Email ou senha inválidos." });
+      return res
+        .status(401)
+        .json({ mensagem: "Email, usuário ou senha inválidos." });
     }
 
     // Comparar a senha com o hash salvo
     const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
     if (!senhaCorreta) {
-      return res.status(401).json({ mensagem: "Email ou senha inválidos." });
+      return res
+        .status(401)
+        .json({ mensagem: "Email, usuário ou senha inválidos." });
     }
 
     // Gerar o token JWT
@@ -69,6 +84,7 @@ export const login = async (req, res) => {
       usuario: {
         id: usuario._id,
         nome: usuario.nome,
+        username: usuario.username,
         email: usuario.email,
       },
     });
@@ -82,7 +98,7 @@ export const login = async (req, res) => {
 export const atualizar = async (req, res) => {
   try {
     const usuarioLogado = req.usuarioId; //  Pegando o usuario logado
-    const camposAtualizaveis = ["nome", "email", "senha"];
+    const camposAtualizaveis = ["nome", "username", "email", "senha"];
     const dadosAtualizar = {};
 
     // Montando o obj de dadosAtualizar
@@ -100,10 +116,25 @@ export const atualizar = async (req, res) => {
 
     // Verificar se o email já existe
     if (dadosAtualizar.email) {
-      const emailEmUso = await Usuario.findOne({ email: dadosAtualizar.email });
+      const emailEmUso = await Usuario.findOne({
+        email: dadosAtualizar.email,
+        _id: { $ne: usuarioLogado },
+      });
 
       if (emailEmUso) {
         return res.status(400).json({ mensagem: "Email já cadastrado" });
+      }
+    }
+
+    // Verificar se o username já existe
+    if (dadosAtualizar.username) {
+      const usernameEmUso = await Usuario.findOne({
+        username: dadosAtualizar.username,
+        _id: { $ne: usuarioLogado },
+      });
+
+      if (usernameEmUso) {
+        return res.status(400).json({ mensagem: "Nome de usuário já em uso" });
       }
     }
 
@@ -125,4 +156,3 @@ export const atualizar = async (req, res) => {
       .json({ mensagem: "Erro ao realizar atualização.", erro: erro.message });
   }
 };
-     

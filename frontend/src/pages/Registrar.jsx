@@ -9,6 +9,7 @@ export default function Registrar() {
   const navigate = useNavigate();
 
   const [nome, setNome] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ export default function Registrar() {
     try {
       await axios.post(
         "http://localhost:3000/usuarios/registrar",
-        { nome, email, senha },
+        { nome, username, email, senha },
         { timeout: 5000 },
       );
 
@@ -94,6 +95,25 @@ export default function Registrar() {
                 placeholder="Seu nome completo"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
+                required
+                className="h-14 bg-accent/50 border-none rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
+              />
+            </div>
+
+            {/* Campo Username */}
+            <div className="flex flex-col space-y-2">
+              <Label
+                htmlFor="username"
+                className="text-xs font-bold text-muted-foreground tracking-widest px-1 uppercase"
+              >
+                Nome de Usuário
+              </Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Como você quer ser chamado (ex: Joao123)"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
                 className="h-14 bg-accent/50 border-none rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
               />

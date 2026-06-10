@@ -1,10 +1,17 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const usuarioSchema = new mongoose.Schema(
   {
     nome: {
       type: String,
       required: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
       trim: true,
     },
     email: {
@@ -18,14 +25,14 @@ const usuarioSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 8, // senha deve ter pelo menos 8 caracteres
-      select: false
+      select: false,
     },
   },
   {
     timestamps: true, // cria createdAt e updatedAt automaticamente
   },
-)
+);
 
-const Usuario = mongoose.model('Usuario', usuarioSchema)
+const Usuario = mongoose.model("Usuario", usuarioSchema);
 
-export default Usuario
+export default Usuario;
