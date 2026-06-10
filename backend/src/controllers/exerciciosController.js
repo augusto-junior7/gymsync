@@ -1,0 +1,1 @@
+import Exercicio from "../models/exercicio.js"
