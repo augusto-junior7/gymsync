@@ -8,7 +8,7 @@ export const exercicios = async (req, res) => {
     // verificação para ver se o frontend mandou o parametro "grupo" na URL
     if (req.query.grupo) {
       // extraindo o pedido do filtro pela URL (GET com form HTML)
-      filtro.musculosPrincipais = req.query.grupo;
+      filtro.musculosPrincipais = { $regex: new RegExp(req.query.grupo, 'i')}
     }
 
     // Busca no banco de dados os exercícios com esse filtro

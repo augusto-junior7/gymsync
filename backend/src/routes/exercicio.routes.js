@@ -7,7 +7,7 @@ import {
 
 const router = Router();
 
-router.get("/exercicios", exercicios);
-router.get("/exercicios/:id", exerciciosId);
+router.get('/', exercicios);
+router.get('/:id', exerciciosId);
 
 export default router;
