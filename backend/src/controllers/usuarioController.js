@@ -95,6 +95,23 @@ export const login = async (req, res) => {
   }
 };
 
+// GET /usuarios/perfil
+export const getPerfil = async (req, res) => {
+  try {
+    // O ID do usuário é adicionado ao req pelo middleware de autenticação
+    const usuario = await Usuario.findById(req.usuarioId).select("-senha");
+
+    if (!usuario) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado." });
+    }
+
+    res.status(200).json(usuario);
+  } catch (erro) {
+    console.error("Erro ao buscar perfil do usuário:", erro);
+    res.status(500).json({ mensagem: "Erro interno do servidor ao buscar perfil." });
+  }
+};
+
 export const atualizar = async (req, res) => {
   try {
     const usuarioLogado = req.usuarioId; //  Pegando o usuario logado
