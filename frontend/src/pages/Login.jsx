@@ -1,56 +1,56 @@
-import axios from "axios";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Importando o useNavigate
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import axios from 'axios'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom' // Importando o useNavigate
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function Login() {
-  const [identificacao, setIdentificacao] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
-  const navigate = useNavigate();
+  const [identificacao, setIdentificacao] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [loginError, setLoginError] = useState('')
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
-    e?.preventDefault?.();
+    e?.preventDefault?.()
 
-    console.log("handleLogin called", { identificacao });
+    console.log('handleLogin called', { identificacao })
 
     if (!navigator.onLine) {
-      setLoginError("Sem conexão. Verifique sua internet.");
-      return;
+      setLoginError('Sem conexão. Verifique sua internet.')
+      return
     }
 
-    setLoading(true);
-    setLoginError("");
+    setLoading(true)
+    setLoginError('')
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/usuarios/login",
+        'http://localhost:3000/usuarios/login',
         { identificacao, senha: password },
-        { timeout: 5000 },
-      );
+        { timeout: 5000 }
+      )
 
-      const token = response.data.token;
-      localStorage.setItem("gymsync_token", token);
-      navigate("/dashboard");
+      const token = response.data.token
+      localStorage.setItem('gymsync_token', token)
+      navigate('/dashboard')
     } catch (error) {
       if (error.response) {
-        setLoginError(error.response.data?.message || "Erro no servidor");
-      } else if (error.code === "ECONNABORTED") {
-        setLoginError("Tempo de resposta esgotado. Tente novamente.");
+        setLoginError(error.response.data?.message || 'Erro no servidor')
+      } else if (error.code === 'ECONNABORTED') {
+        setLoginError('Tempo de resposta esgotado. Tente novamente.')
       } else if (error.request) {
-        setLoginError("Servidor indisponível. Tente novamente mais tarde.");
+        setLoginError('Servidor indisponível. Tente novamente mais tarde.')
       } else {
-        setLoginError("Erro na requisição. Verifique sua conexão.");
+        setLoginError('Erro na requisição. Verifique sua conexão.')
       }
 
-      console.error("Falha no login:", error);
+      console.error('Falha no login:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
@@ -67,8 +67,8 @@ export default function Login() {
         <form
           className="space-y-8"
           onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin(e);
+            e.preventDefault()
+            handleLogin(e)
           }}
         >
           <div className="space-y-6">
@@ -123,10 +123,10 @@ export default function Login() {
             type="submit"
             disabled={loading}
             className={`w-full h-16 bg-gradient-to-br from-[#cafd00] to-[#beee00] hover:from-[#beee00] hover:to-[#cafd00] text-[#4a5e00] font-headline font-black text-lg tracking-widest uppercase rounded-xl shadow-[0_8px_32px_rgba(202,253,0,0.15)] transition-transform active:scale-95 ${
-              loading ? "opacity-70 pointer-events-none" : ""
+              loading ? 'opacity-70 pointer-events-none' : ''
             }`}
           >
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
 
@@ -143,5 +143,5 @@ export default function Login() {
         </footer>
       </section>
     </main>
-  );
+  )
 }

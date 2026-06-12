@@ -1,67 +1,67 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import axios from 'axios'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function Registrar() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const [nome, setNome] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [registerError, setRegisterError] = useState("");
+  const [nome, setNome] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [registerError, setRegisterError] = useState('')
 
   useEffect(() => {
     try {
-      const token = localStorage.getItem("gymsync_token");
-      import("@/lib/auth").then(({ isTokenValid }) => {
-        if (isTokenValid(token)) navigate("/perfil");
-      });
+      const token = localStorage.getItem('gymsync_token')
+      import('@/lib/auth').then(({ isTokenValid }) => {
+        if (isTokenValid(token)) navigate('/perfil')
+      })
     } catch {
       // ignore
     }
-  }, [navigate]);
+  }, [navigate])
 
   const handleRegister = async (e) => {
-    e?.preventDefault?.();
+    e?.preventDefault?.()
 
     if (!navigator.onLine) {
-      setRegisterError("Sem conexão. Verifique sua internet.");
-      return;
+      setRegisterError('Sem conexão. Verifique sua internet.')
+      return
     }
 
-    setLoading(true);
-    setRegisterError("");
+    setLoading(true)
+    setRegisterError('')
 
     try {
       await axios.post(
-        "http://localhost:3000/usuarios/registrar",
+        'http://localhost:3000/usuarios/registrar',
         { nome, username, email, senha },
-        { timeout: 5000 },
-      );
+        { timeout: 5000 }
+      )
 
       // Após registrar com sucesso, redireciona para a tela de login
-      navigate("/login");
+      navigate('/login')
     } catch (error) {
       if (error.response) {
         // Exibe a mensagem de erro que vem da sua API
-        setRegisterError(error.response.data?.mensagem || "Erro no servidor");
-      } else if (error.code === "ECONNABORTED") {
-        setRegisterError("Tempo de resposta esgotado. Tente novamente.");
+        setRegisterError(error.response.data?.mensagem || 'Erro no servidor')
+      } else if (error.code === 'ECONNABORTED') {
+        setRegisterError('Tempo de resposta esgotado. Tente novamente.')
       } else if (error.request) {
-        setRegisterError("Servidor indisponível. Tente novamente mais tarde.");
+        setRegisterError('Servidor indisponível. Tente novamente mais tarde.')
       } else {
-        setRegisterError("Erro na requisição. Verifique sua conexão.");
+        setRegisterError('Erro na requisição. Verifique sua conexão.')
       }
-      console.error("Falha no registro:", error);
+      console.error('Falha no registro:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
@@ -167,10 +167,10 @@ export default function Registrar() {
             type="submit"
             disabled={loading}
             className={`w-full h-16 bg-gradient-to-br from-[#cafd00] to-[#beee00] hover:from-[#beee00] hover:to-[#cafd00] text-[#4a5e00] font-headline font-black text-lg tracking-widest uppercase rounded-xl shadow-[0_8px_32px_rgba(202,253,0,0.15)] transition-transform active:scale-95 ${
-              loading ? "opacity-70 pointer-events-none" : ""
+              loading ? 'opacity-70 pointer-events-none' : ''
             }`}
           >
-            {loading ? "Cadastrando..." : "Cadastrar"}
+            {loading ? 'Cadastrando...' : 'Cadastrar'}
           </Button>
         </form>
 
@@ -187,5 +187,5 @@ export default function Registrar() {
         </footer>
       </section>
     </main>
-  );
+  )
 }

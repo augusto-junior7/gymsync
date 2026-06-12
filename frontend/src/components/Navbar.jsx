@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Compass, Dumbbell, User, Bell } from "lucide-react";
+import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { LayoutDashboard, Compass, Dumbbell, User, Bell } from 'lucide-react'
 
 export default function Navbar() {
-  const location = useLocation();
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const location = useLocation()
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 
   const navLinks = [
-    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Explorar", path: "/explorar", icon: Compass },
-    { name: "Treinos", path: "/treinos", icon: Dumbbell },
-    { name: "Perfil", path: "/perfil", icon: User },
-  ];
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Explorar', path: '/explorar', icon: Compass },
+    { name: 'Treinos', path: '/treinos', icon: Dumbbell },
+    { name: 'Perfil', path: '/perfil', icon: User },
+  ]
 
-  const checkIsActive = (path) => location.pathname === path;
+  const checkIsActive = (path) => location.pathname === path
 
   // Encontra o índice numérico do link ativo para calcular o deslizamento
-  const activeIndex = navLinks.findIndex((link) => checkIsActive(link.path));
+  const activeIndex = navLinks.findIndex((link) => checkIsActive(link.path))
 
   return (
     <>
@@ -48,20 +48,20 @@ export default function Navbar() {
             />
 
             {navLinks.map((link) => {
-              const isActive = checkIsActive(link.path);
+              const isActive = checkIsActive(link.path)
               return (
                 <Link
                   key={link.name}
                   to={link.path}
                   className={`relative z-10 w-28 text-center py-2 rounded-full text-sm font-bold tracking-wide transition-colors duration-300 ${
                     isActive
-                      ? "text-[#cafd00]"
-                      : "text-[#adaaaa] hover:text-[#f3ffca]"
+                      ? 'text-[#cafd00]'
+                      : 'text-[#adaaaa] hover:text-[#f3ffca]'
                   }`}
                 >
                   {link.name}
                 </Link>
-              );
+              )
             })}
           </nav>
         </div>
@@ -72,8 +72,8 @@ export default function Navbar() {
             onClick={() => setIsNotificationOpen(!isNotificationOpen)}
             className={`p-2 rounded-full transition-all duration-300 flex items-center justify-center ${
               isNotificationOpen
-                ? "text-[#cafd00] bg-transparent hover:bg-white/5"
-                : "text-[#adaaaa] bg-transparent hover:text-[#f3ffca] hover:bg-white/5"
+                ? 'text-[#cafd00] bg-transparent hover:bg-white/5'
+                : 'text-[#adaaaa] bg-transparent hover:text-[#f3ffca] hover:bg-white/5'
             }`}
           >
             <Bell className="w-7 h-7 md:w-6 md:h-6" />
@@ -99,8 +99,8 @@ export default function Navbar() {
           </div>
 
           {navLinks.map((link) => {
-            const isActive = checkIsActive(link.path);
-            const Icon = link.icon;
+            const isActive = checkIsActive(link.path)
+            const Icon = link.icon
 
             return (
               <Link
@@ -108,16 +108,16 @@ export default function Navbar() {
                 to={link.path}
                 className={`relative z-10 flex-1 flex flex-col items-center justify-center h-full transition-all duration-300 active:scale-90 ${
                   isActive
-                    ? "text-[#4a5e00] scale-110 -translate-y-2"
-                    : "text-[#f3ffca]/60 hover:text-[#cafd00]"
+                    ? 'text-[#4a5e00] scale-110 -translate-y-2'
+                    : 'text-[#f3ffca]/60 hover:text-[#cafd00]'
                 }`}
               >
                 <Icon className="w-6 h-6" />
               </Link>
-            );
+            )
           })}
         </div>
       </nav>
     </>
-  );
+  )
 }

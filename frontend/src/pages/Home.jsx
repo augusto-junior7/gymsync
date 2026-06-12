@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Dumbbell, Search, LineChart, Users } from "lucide-react";
+import { Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Dumbbell, Search, LineChart, Users } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -121,5 +121,5 @@ export default function Home() {
         </p>
       </footer>
     </main>
-  );
+  )
 }

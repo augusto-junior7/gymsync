@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 import {
   Activity,
   Calendar,
@@ -10,47 +10,47 @@ import {
   Plus,
   Search,
   ChevronRight,
-} from "lucide-react";
+} from 'lucide-react'
 
 export default function Dashboard() {
-  const [usuario, setUsuario] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [usuario, setUsuario] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const token = localStorage.getItem("gymsync_token");
+        const token = localStorage.getItem('gymsync_token')
         if (!token) {
           setError(
-            "Token de autenticação não encontrado. Faça login novamente.",
-          );
-          setLoading(false);
-          return;
+            'Token de autenticação não encontrado. Faça login novamente.'
+          )
+          setLoading(false)
+          return
         }
 
         const response = await axios.get(
-          "http://localhost:3000/usuarios/perfil",
+          'http://localhost:3000/usuarios/perfil',
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
-        );
+          }
+        )
 
-        setUsuario(response.data);
+        setUsuario(response.data)
       } catch (err) {
         setError(
-          "Falha ao carregar os dados do painel. Tente recarregar a página.",
-        );
-        console.error("Erro no dashboard:", err);
+          'Falha ao carregar os dados do painel. Tente recarregar a página.'
+        )
+        console.error('Erro no dashboard:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchUsuario();
-  }, []);
+    fetchUsuario()
+  }, [])
 
   if (loading) {
     return (
@@ -61,7 +61,7 @@ export default function Dashboard() {
           Sincronizando...
         </p>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -77,10 +77,10 @@ export default function Dashboard() {
           </Button>
         </div>
       </div>
-    );
+    )
   }
 
-  const primeiroNome = usuario?.nome?.split(" ")[0] || "Atleta";
+  const primeiroNome = usuario?.nome?.split(' ')[0] || 'Atleta'
 
   return (
     <main className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-background">
@@ -174,7 +174,7 @@ export default function Dashboard() {
         </div>
       </div>
     </main>
-  );
+  )
 }
 
 function StatCard({ icon, title, value, subtitle }) {
@@ -195,7 +195,7 @@ function StatCard({ icon, title, value, subtitle }) {
         </p>
       </div>
     </div>
-  );
+  )
 }
 
 function ActionCard({ title, desc, to }) {
@@ -216,5 +216,5 @@ function ActionCard({ title, desc, to }) {
         </div>
       </div>
     </Link>
-  );
+  )
 }

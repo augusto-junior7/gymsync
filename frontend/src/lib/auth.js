@@ -12,7 +12,7 @@ export function isTokenValid(token) {
         .map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
         })
-        .join(''),
+        .join('')
     )
     const data = JSON.parse(jsonPayload)
     if (!data.exp) return false
