@@ -45,7 +45,6 @@ export const exerciciosId = async (req, res) => {
     // Se encontrar, devolve o exercício
     return res.status(200).json(exercicioEspecifico)
   } catch (erro) {
-    console.error('Erro na rota id', erro)
     return res
       .status(500)
       .json({ mensagem: 'Erro ao buscar exercício.', erro: erro.mensagem })
