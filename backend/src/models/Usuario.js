@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const usuarioSchema = new mongoose.Schema(
   {
@@ -30,9 +30,9 @@ const usuarioSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // cria createdAt e updatedAt automaticamente
-  },
-);
+  }
+)
 
-const Usuario = mongoose.model("Usuario", usuarioSchema);
+const Usuario = mongoose.model('Usuario', usuarioSchema)
 
-export default Usuario;
+export default Usuario

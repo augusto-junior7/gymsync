@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const exercicioSchema = new mongoose.Schema(
   {
@@ -16,34 +16,34 @@ const exercicioSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ['beginner', 'intermediate', 'expert']
+      enum: ['beginner', 'intermediate', 'expert'],
     },
     mecanica: {
       type: String,
       default: null,
     },
     equipamento: {
-        type: String,
-        default: null
+      type: String,
+      default: null,
     },
     musculosPrincipais: {
-        type: [String],
-        required: true,
+      type: [String],
+      required: true,
     },
     musculosSecundarios: {
-        type: [String],
-        default: [],
+      type: [String],
+      default: [],
     },
     instrucoes: {
-        type: [String],
-        required: true,
-    }
+      type: [String],
+      required: true,
+    },
   },
   {
     timestamps: true, // cria createdAt e updatedAt automaticamente
-  },
-);
+  }
+)
 
-const Exercicio = mongoose.model("Exercicio", exercicioSchema);
+const Exercicio = mongoose.model('Exercicio', exercicioSchema)
 
-export default Exercicio;
+export default Exercicio

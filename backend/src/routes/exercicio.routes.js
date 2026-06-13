@@ -1,13 +1,13 @@
-import { Router } from "express";
-import Exercicio from "../models/exercicio.js";
+import { Router } from 'express'
+import Exercicio from '../models/exercicio.js'
 import {
   exercicios,
   exerciciosId,
-} from "../controllers/exerciciosController.js";
+} from '../controllers/exerciciosController.js'
 
-const router = Router();
+const router = Router()
 
-router.get('/', exercicios);
-router.get('/:id', exerciciosId);
+router.get('/', exercicios)
+router.get('/:id', exerciciosId)
 
-export default router;
+export default router
