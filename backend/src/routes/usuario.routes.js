@@ -4,7 +4,7 @@ import {
   registrar,
   login,
   atualizar,
-} from '../controllers/usuarioController.js'
+} from '../controllers/usuariosController.js'
 import autenticar from '../middlewares/autenticar.js'
 import Usuario from '../models/Usuario.js'
 
