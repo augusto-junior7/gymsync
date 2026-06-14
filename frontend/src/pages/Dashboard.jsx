@@ -99,10 +99,12 @@ export default function Dashboard() {
               Pronto para superar seus limites hoje?
             </p>
           </div>
-          <Button className="h-14 px-8 bg-gradient-to-br from-[#cafd00] to-[#beee00] hover:from-[#beee00] hover:to-[#cafd00] text-[#4a5e00] font-headline font-black text-base tracking-widest uppercase rounded-xl shadow-[0_8px_32px_rgba(202,253,0,0.15)] transition-transform active:scale-95 flex items-center gap-2">
-            <Plus strokeWidth={3} size={20} />
-            Iniciar Treino
-          </Button>
+          <Link to="/treinos">
+            <Button className="h-14 px-8 bg-gradient-to-br from-[#cafd00] to-[#beee00] hover:from-[#beee00] hover:to-[#cafd00] text-[#4a5e00] font-headline font-black text-base tracking-widest uppercase rounded-xl shadow-[0_8px_32px_rgba(202,253,0,0.15)] transition-transform active:scale-95 flex items-center gap-2">
+              <Plus strokeWidth={3} size={20} />
+              Iniciar Treino
+            </Button>
+          </Link>
         </header>
 
         {/* Grade de Estatísticas */}
