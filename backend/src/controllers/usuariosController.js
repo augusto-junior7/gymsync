@@ -13,10 +13,10 @@ export const registrar = async (req, res) => {
     })
     if (usuarioExistente) {
       if (usuarioExistente.email === email) {
-        return res.status(400).json({ mensagem: 'Email já cadastrado.' })
+        return res.status(400).json({ mensage: 'Email já cadastrado.' })
       }
       if (usuarioExistente.username === username) {
-        return res.status(400).json({ mensagem: 'Nome de usuário já em uso.' })
+        return res.status(400).json({ mensage: 'Nome de usuário já em uso.' })
       }
     }
 
@@ -33,7 +33,7 @@ export const registrar = async (req, res) => {
 
     // Responder sem expor a senha
     res.status(201).json({
-      mensagem: 'Usuário criado com sucesso.',
+      mensage: 'Usuário criado com sucesso.',
       usuario: {
         id: novoUsuario._id,
         nome: novoUsuario.nome,
@@ -44,7 +44,7 @@ export const registrar = async (req, res) => {
   } catch (erro) {
     res
       .status(500)
-      .json({ mensagem: 'Erro ao criar usuário.', erro: erro.message })
+      .json({ mensage: 'Erro ao criar usuário.', erro: erro.message })
   }
 }
 
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
     if (!usuario) {
       return res
         .status(401)
-        .json({ mensagem: 'Email, usuário ou senha inválidos.' })
+        .json({ mensage: 'Email, usuário ou senha inválidos.' })
     }
 
     // Comparar a senha com o hash salvo
@@ -68,7 +68,7 @@ export const login = async (req, res) => {
     if (!senhaCorreta) {
       return res
         .status(401)
-        .json({ mensagem: 'Email, usuário ou senha inválidos.' })
+        .json({ mensage: 'Email, usuário ou senha inválidos.' })
     }
 
     // Gerar o token JWT
@@ -79,7 +79,7 @@ export const login = async (req, res) => {
     )
 
     res.status(200).json({
-      mensagem: 'Login realizado com sucesso.',
+      mensage: 'Login realizado com sucesso.',
       token,
       usuario: {
         id: usuario._id,
@@ -91,7 +91,7 @@ export const login = async (req, res) => {
   } catch (erro) {
     res
       .status(500)
-      .json({ mensagem: 'Erro ao fazer login.', erro: erro.message })
+      .json({ mensage: 'Erro ao fazer login.', erro: erro.message })
   }
 }
 
@@ -102,7 +102,7 @@ export const getPerfil = async (req, res) => {
     const usuario = await Usuario.findById(req.usuarioId).select('-senha')
 
     if (!usuario) {
-      return res.status(404).json({ mensagem: 'Usuário não encontrado.' })
+      return res.status(404).json({ mensage: 'Usuário não encontrado.' })
     }
 
     res.status(200).json(usuario)
@@ -110,7 +110,7 @@ export const getPerfil = async (req, res) => {
     console.error('Erro ao buscar perfil do usuário:', erro)
     res
       .status(500)
-      .json({ mensagem: 'Erro interno do servidor ao buscar perfil.' })
+      .json({ mensage: 'Erro interno do servidor ao buscar perfil.' })
   }
 }
 
@@ -130,7 +130,7 @@ export const atualizar = async (req, res) => {
 
     // Se não vier nenhum campo, envia uma res de erro
     if (Object.keys(dadosAtualizar).length === 0) {
-      return res.status(400).json({ mensagem: 'Necessário ao menos um campo' })
+      return res.status(400).json({ mensage: 'Necessário ao menos um campo' })
     }
 
     // Verificar se o email já existe
@@ -141,7 +141,7 @@ export const atualizar = async (req, res) => {
       })
 
       if (emailEmUso) {
-        return res.status(400).json({ mensagem: 'Email já cadastrado' })
+        return res.status(400).json({ mensage: 'Email já cadastrado' })
       }
     }
 
@@ -153,7 +153,7 @@ export const atualizar = async (req, res) => {
       })
 
       if (usernameEmUso) {
-        return res.status(400).json({ mensagem: 'Nome de usuário já em uso' })
+        return res.status(400).json({ mensage: 'Nome de usuário já em uso' })
       }
     }
 
@@ -168,10 +168,10 @@ export const atualizar = async (req, res) => {
       usuarioLogado,
       dadosAtualizar
     )
-    res.status(200).json({ mensagem: 'Atualização realizado com sucesso.' })
+    res.status(200).json({ mensage: 'Atualização realizado com sucesso.' })
   } catch (erro) {
     return res
       .status(500)
-      .json({ mensagem: 'Erro ao realizar atualização.', erro: erro.message })
+      .json({ mensage: 'Erro ao realizar atualização.', erro: erro.message })
   }
 }
