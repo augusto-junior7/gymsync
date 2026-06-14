@@ -1,4 +1,4 @@
-import axios from 'axios'
+import api from '@/services/api'
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -112,8 +112,8 @@ export default function Registrar() {
     setRegisterError('')
 
     try {
-      await axios.post(
-        'http://localhost:3000/usuarios/registrar',
+      await api.post(
+        '/usuarios/registrar',
         { nome, username, email, senha },
         { timeout: 5000 }
       )
@@ -272,7 +272,7 @@ export default function Registrar() {
                   onClick={() =>
                     setMostrarConfirmarSenha(!mostrarConfirmarSenha)
                   }
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#cafd00] transition-colors focus:outline-none"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors focus:outline-none"
                   aria-label={
                     mostrarConfirmarSenha ? 'Ocultar senha' : 'Mostrar senha'
                   }

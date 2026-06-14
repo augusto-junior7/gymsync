@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '@/services/api'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,8 +29,8 @@ export default function Dashboard() {
           return
         }
 
-        const response = await axios.get(
-          'http://localhost:3000/usuarios/perfil',
+        const response = await api.get(
+          '/usuarios/perfil',
           {
             headers: {
               Authorization: `Bearer ${token}`,

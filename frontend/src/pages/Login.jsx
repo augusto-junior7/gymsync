@@ -1,4 +1,4 @@
-import axios from 'axios'
+import api from '@/services/api'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom' // Importando o useNavigate
 import { Button } from '@/components/ui/button'
@@ -28,8 +28,8 @@ export default function Login() {
     setLoginError('')
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/usuarios/login',
+      const response = await api.post(
+        '/usuarios/login',
         { identificacao, senha: password },
         { timeout: 5000 }
       )
@@ -120,7 +120,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setMostrarSenha(!mostrarSenha)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#cafd00] transition-colors focus:outline-none"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors focus:outline-none"
                   aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
                 >
                   {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
