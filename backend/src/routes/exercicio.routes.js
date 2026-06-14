@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import Exercicio from '../models/exercicio.js'
 import {
   exercicios,
   exerciciosId,
