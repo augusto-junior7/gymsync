@@ -4,12 +4,14 @@ import { Link, useNavigate } from 'react-router-dom' // Importando o useNavigate
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Eye, EyeOff } from 'lucide-react' // Importando os ícones
 
 export default function Login() {
   const [identificacao, setIdentificacao] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [loginError, setLoginError] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false) // Estado para visualizar a senha
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
@@ -104,14 +106,26 @@ export default function Login() {
                   Esqueceu?
                 </a>*/}
               </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-14 bg-accent/50 border-none rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
-              />
+
+              {/* Container da Senha com Botão de Visualização */}
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={mostrarSenha ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-14 bg-accent/50 border-none rounded-xl pl-4 pr-12 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#cafd00] transition-colors focus:outline-none"
+                  aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
           </div>
 

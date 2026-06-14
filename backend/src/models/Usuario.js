@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+const usernameRegex = /^[a-z0-9]+(?:[_-][a-z0-9]+)*$/
+
 const usuarioSchema = new mongoose.Schema(
   {
     nome: {
@@ -13,6 +15,10 @@ const usuarioSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      match: [
+        usernameRegex,
+        'Username deve conter apenas letras minúsculas, números, _ e -, sem espaços ou caracteres especiais.',
+      ],
     },
     email: {
       type: String,

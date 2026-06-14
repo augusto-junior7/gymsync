@@ -4,16 +4,28 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function Registrar() {
   const navigate = useNavigate()
 
+  // Estados dos campos
   const [nome, setNome] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [confirmarSenha, setConfirmarSenha] = useState('')
+
+  // Estados de erro em tempo real
+  const [usernameError, setUsernameError] = useState('')
+  const [senhaError, setSenhaError] = useState('')
+  const [confirmarSenhaError, setConfirmarSenhaError] = useState('')
   const [registerError, setRegisterError] = useState('')
+
+  // Estados de UI
+  const [loading, setLoading] = useState(false)
+  const [mostrarSenha, setMostrarSenha] = useState(false)
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false)
 
   useEffect(() => {
     try {
@@ -26,8 +38,70 @@ export default function Registrar() {
     }
   }, [navigate])
 
+  // --- Handlers com Validação em Tempo Real ---
+
+  const handleUsernameChange = (e) => {
+    const val = e.target.value
+    setUsername(val)
+
+    // Validação: apenas minúsculas, números, _ e -
+    if (val.length > 0 && !/^[a-z0-9_-]+$/.test(val)) {
+      setUsernameError(
+        'Apenas letras minúsculas, números, _ e - são permitidos.'
+      )
+    } else {
+      setUsernameError('')
+    }
+  }
+
+  const handleSenhaChange = (e) => {
+    const val = e.target.value
+    setSenha(val)
+
+    // Validação: min 8 caracteres, pelo menos 1 número
+    if (val.length > 0 && (val.length < 8 || !/\d/.test(val))) {
+      setSenhaError(
+        'A senha deve ter no mínimo 8 caracteres e pelo menos 1 número.'
+      )
+    } else {
+      setSenhaError('')
+    }
+
+    // Re-valida a confirmação se o usuário alterar a primeira senha depois de já ter preenchido a segunda
+    if (confirmarSenha && val !== confirmarSenha) {
+      setConfirmarSenhaError('As senhas não coincidem.')
+    } else if (confirmarSenha) {
+      setConfirmarSenhaError('')
+    }
+  }
+
+  const handleConfirmarSenhaChange = (e) => {
+    const val = e.target.value
+    setConfirmarSenha(val)
+
+    // Validação: idêntica à primeira senha
+    if (val.length > 0 && val !== senha) {
+      setConfirmarSenhaError('As senhas não coincidem.')
+    } else {
+      setConfirmarSenhaError('')
+    }
+  }
+
+  // --- Submissão do Formulário ---
+
   const handleRegister = async (e) => {
     e?.preventDefault?.()
+
+    // Bloqueia o envio se houver erros de validação pendentes ou campos vazios
+    if (usernameError || senhaError || confirmarSenhaError) {
+      setRegisterError('Por favor, corrija os erros nos campos acima.')
+      return
+    }
+
+    if (senha !== confirmarSenha) {
+      setConfirmarSenhaError('As senhas não coincidem.')
+      return
+    }
 
     if (!navigator.onLine) {
       setRegisterError('Sem conexão. Verifique sua internet.')
@@ -44,12 +118,10 @@ export default function Registrar() {
         { timeout: 5000 }
       )
 
-      // Após registrar com sucesso, redireciona para a tela de login
       navigate('/login')
     } catch (error) {
       if (error.response) {
-        // Exibe a mensagem de erro que vem da sua API
-        setRegisterError(error.response.data?.mensagem || 'Erro no servidor')
+        setRegisterError(error.response.data?.message || 'Erro no servidor')
       } else if (error.code === 'ECONNABORTED') {
         setRegisterError('Tempo de resposta esgotado. Tente novamente.')
       } else if (error.request) {
@@ -111,12 +183,17 @@ export default function Registrar() {
               <Input
                 id="username"
                 type="text"
-                placeholder="Como você quer ser chamado (ex: Joao123)"
+                placeholder="ex: joao_123"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleUsernameChange}
                 required
-                className="h-14 bg-accent/50 border-none rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
+                className={`h-14 bg-accent/50 border ${usernameError ? 'border-red-500' : 'border-transparent'} rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]`}
               />
+              {usernameError && (
+                <p className="text-xs text-red-500 font-medium px-1">
+                  {usernameError}
+                </p>
+              )}
             </div>
 
             {/* Campo E-mail */}
@@ -146,28 +223,93 @@ export default function Registrar() {
               >
                 Senha
               </Label>
-              <Input
-                id="senha"
-                type="password"
-                placeholder="Mínimo de 8 caracteres"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                required
-                minLength={8}
-                className="h-14 bg-accent/50 border-none rounded-xl px-4 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]"
-              />
+              <div className="relative">
+                <Input
+                  id="senha"
+                  type={mostrarSenha ? 'text' : 'password'}
+                  placeholder="Mínimo de 8 caracteres e 1 número"
+                  value={senha}
+                  onChange={handleSenhaChange}
+                  required
+                  className={`h-14 bg-accent/50 border ${senhaError ? 'border-red-500' : 'border-transparent'} rounded-xl pl-4 pr-12 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#cafd00] transition-colors focus:outline-none"
+                  aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {senhaError && (
+                <p className="text-xs text-red-500 font-medium px-1">
+                  {senhaError}
+                </p>
+              )}
+            </div>
+
+            {/* Campo Confirmar Senha */}
+            <div className="flex flex-col space-y-2">
+              <Label
+                htmlFor="confirmarSenha"
+                className="text-xs font-bold text-muted-foreground tracking-widest px-1 uppercase"
+              >
+                Confirme sua Senha
+              </Label>
+              <div className="relative">
+                <Input
+                  id="confirmarSenha"
+                  type={mostrarConfirmarSenha ? 'text' : 'password'}
+                  placeholder="Digite a senha novamente"
+                  value={confirmarSenha}
+                  onChange={handleConfirmarSenhaChange}
+                  required
+                  className={`h-14 bg-accent/50 border ${confirmarSenhaError ? 'border-red-500' : 'border-transparent'} rounded-xl pl-4 pr-12 text-foreground focus-visible:ring-2 focus-visible:ring-[#cafd00]`}
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMostrarConfirmarSenha(!mostrarConfirmarSenha)
+                  }
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#cafd00] transition-colors focus:outline-none"
+                  aria-label={
+                    mostrarConfirmarSenha ? 'Ocultar senha' : 'Mostrar senha'
+                  }
+                >
+                  {mostrarConfirmarSenha ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
+              {confirmarSenhaError && (
+                <p className="text-xs text-red-500 font-medium px-1">
+                  {confirmarSenhaError}
+                </p>
+              )}
             </div>
           </div>
 
           {registerError && (
-            <p className="text-sm text-red-500 text-center">{registerError}</p>
+            <p className="text-sm text-red-500 text-center font-medium bg-red-500/10 py-2 rounded-lg">
+              {registerError}
+            </p>
           )}
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={
+              loading ||
+              !!usernameError ||
+              !!senhaError ||
+              !!confirmarSenhaError
+            }
             className={`w-full h-16 bg-gradient-to-br from-[#cafd00] to-[#beee00] hover:from-[#beee00] hover:to-[#cafd00] text-[#4a5e00] font-headline font-black text-lg tracking-widest uppercase rounded-xl shadow-[0_8px_32px_rgba(202,253,0,0.15)] transition-transform active:scale-95 ${
-              loading ? 'opacity-70 pointer-events-none' : ''
+              loading || usernameError || senhaError || confirmarSenhaError
+                ? 'opacity-70 cursor-not-allowed'
+                : ''
             }`}
           >
             {loading ? 'Cadastrando...' : 'Cadastrar'}
