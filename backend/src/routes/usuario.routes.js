@@ -6,7 +6,6 @@ import {
   atualizar,
 } from '../controllers/usuariosController.js'
 import autenticar from '../middlewares/autenticar.js'
-import Usuario from '../models/Usuario.js'
 
 const router = Router()
 
