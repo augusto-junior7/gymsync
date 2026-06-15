@@ -1,68 +1,59 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Zap,
   PlusCircle,
-  MoreVertical,
-  Play,
-  ArrowRight,
   CheckCircle2,
   ChevronRight,
-  ListOrdered,
+  Dumbbell,
 } from 'lucide-react'
+import TreinoCard from '@/components/TreinoCard'
 
-// Dados mockados para visualização do protótipo
+// --- DADOS MOCKADOS ---
+
 const meusPlanos = [
   {
     id: '1',
     nome: 'Hipertrofia A - Peito e Tríceps',
-    exercicios: 8,
     visibilidade: 'publico',
+    nivel: 'Intermediário',
   },
   {
     id: '2',
     nome: 'Core & Mobilidade',
-    exercicios: 5,
     visibilidade: 'privado',
+    nivel: 'Iniciante',
   },
 ]
 
 const treinosSalvosMock = [
   {
     id: '3',
-    autor: '@marcos_fit',
+    autor: 'marcos_fit',
     nome: 'Perna Destruidora 3000',
     nivel: 'Avançado',
-    tempo: '60 min',
   },
   {
     id: '4',
-    autor: '@juliana_cross',
+    autor: 'juliana_cross',
     nome: 'WOD: Fogo no Core',
     nivel: 'Intermediário',
-    tempo: '45 min',
   },
   {
     id: '5',
-    autor: '@coach_leo',
+    autor: 'coach_leo',
     nome: 'Iniciante: Full Body',
     nivel: 'Iniciante',
-    tempo: '30 min',
   },
+]
+
+const treinosCompartilhadosMock = [
   {
     id: '6',
-    autor: '@ana_silva',
-    nome: 'Costas e Bíceps',
-    nivel: 'Intermediário',
-    tempo: '50 min',
-  },
-  {
-    id: '7',
-    autor: '@pedro_power',
-    nome: 'Força Bruta - Peito',
-    nivel: 'Avançado',
-    tempo: '75 min',
+    autor: 'personal_carlos',
+    nome: 'Ficha de Adaptação - Mês 1',
+    nivel: 'Iniciante',
   },
 ]
 
@@ -82,13 +73,6 @@ const historico = [
 ]
 
 export default function Treinos() {
-  // Estado para controlar quantos treinos salvos são exibidos (inicia com 3)
-  const [visibleSalvos, setVisibleSalvos] = useState(3)
-
-  const handleCarregarMais = () => {
-    setVisibleSalvos((prev) => prev + 3)
-  }
-
   return (
     <main className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-background">
       {/* Luzes de fundo decorativas */}
@@ -121,121 +105,118 @@ export default function Treinos() {
           </div>
         </section>
 
-        {/* Seção B: Meus Planos de Treino */}
+        {/* Seção B: Gerenciamento de Treinos com TABS */}
         <section className="space-y-6">
-          <div className="flex justify-between items-end">
-            <h3 className="font-headline text-2xl font-bold tracking-tight text-white">
-              MEUS PLANOS
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+            <h3 className="font-headline text-2xl font-bold tracking-tight text-white uppercase">
+              Biblioteca de Treinos
             </h3>
-            {/* Ajuste do botão Criar Novo: Fundo neon, texto contrastante */}
-            <Button className="bg-[#cafd00] text-[#4a5e00] hover:bg-[#beee00] font-headline font-bold flex items-center gap-2 rounded-xl">
+            <Button className="bg-[#cafd00] text-[#4a5e00] hover:bg-[#beee00] font-headline font-bold flex items-center gap-2 rounded-xl w-full sm:w-auto border-none">
               <PlusCircle size={20} />
-              <span className="hidden sm:inline">CRIAR NOVO</span>
+              <span>CRIAR NOVO</span>
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {meusPlanos.map((plano) => (
-              <div
-                key={plano.id}
-                className="bg-accent/10 border border-border/50 rounded-2xl p-6 relative group overflow-hidden hover:bg-accent/20 transition-all duration-300 flex flex-col justify-between min-h-[200px]"
+          <Tabs defaultValue="meus-planos" className="w-full block">
+            {/* TabsList refatorado com GRID para quebrar em 2 linhas no mobile e 1 linha no desktop */}
+            <TabsList className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-row bg-accent/20 border border-border/50 p-1.5 rounded-xl mb-6 w-full sm:w-max h-auto">
+              <TabsTrigger
+                value="meus-planos"
+                // col-span-1 no mobile (ocupa metade), flex no desktop
+                className="col-span-1 sm:flex-none rounded-lg data-[state=active]:bg-[#cafd00] data-[state=active]:text-[#4a5e00] font-bold text-muted-foreground bg-transparent data-[state=inactive]:hover:bg-white/5 py-2 sm:py-2.5 px-1 sm:px-5 transition-all border-none text-[13px] sm:text-base whitespace-nowrap"
               >
-                {/* Indicador de Status Colorido */}
-                <div
-                  className={`absolute left-0 top-0 bottom-0 w-1.5 ${plano.visibilidade === 'publico' ? 'bg-[#cafd00]' : 'bg-muted-foreground/30'}`}
-                ></div>
+                Meus Planos
+              </TabsTrigger>
+              <TabsTrigger
+                value="salvos"
+                // col-span-1 no mobile (ocupa metade), flex no desktop
+                className="col-span-1 sm:flex-none rounded-lg data-[state=active]:bg-[#cafd00] data-[state=active]:text-[#4a5e00] font-bold text-muted-foreground bg-transparent data-[state=inactive]:hover:bg-white/5 py-2 sm:py-2.5 px-1 sm:px-5 transition-all border-none text-[13px] sm:text-base whitespace-nowrap"
+              >
+                Salvos
+              </TabsTrigger>
+              <TabsTrigger
+                value="compartilhados"
+                // col-span-2 no mobile (ocupa a linha inteira embaixo), flex no desktop
+                className="col-span-2 sm:flex-none rounded-lg data-[state=active]:bg-[#cafd00] data-[state=active]:text-[#4a5e00] font-bold text-muted-foreground bg-transparent data-[state=inactive]:hover:bg-white/5 py-2 sm:py-2.5 px-1 sm:px-5 transition-all border-none text-[13px] sm:text-base whitespace-nowrap"
+              >
+                Compartilhados comigo
+              </TabsTrigger>
+            </TabsList>
 
-                <div>
-                  <div className="flex justify-between items-start mb-4">
-                    <span
-                      className={`text-xs font-bold px-3 py-1 rounded-full font-headline uppercase tracking-wide ${plano.visibilidade === 'publico' ? 'bg-[#cafd00] text-[#4a5e00]' : 'bg-muted-foreground/20 text-muted-foreground'}`}
-                    >
-                      {plano.visibilidade}
-                    </span>
-                    <button className="text-muted-foreground hover:text-white transition-colors">
-                      <MoreVertical size={20} />
-                    </button>
-                  </div>
-                  <h4 className="font-headline text-xl font-bold text-white mb-2 line-clamp-2">
-                    {plano.nome}
+            {/* CONTEÚDO: Meus Planos */}
+            <TabsContent
+              value="meus-planos"
+              className="focus-visible:outline-none focus-visible:ring-0 mt-0"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {meusPlanos.map((plano) => (
+                  <TreinoCard
+                    key={plano.id}
+                    treino={plano}
+                    isOwner={true}
+                    showVisibilityBadge={true}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* CONTEÚDO: Salvos */}
+            <TabsContent
+              value="salvos"
+              className="focus-visible:outline-none focus-visible:ring-0 mt-0"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {treinosSalvosMock.map((treino) => (
+                  <TreinoCard
+                    key={treino.id}
+                    treino={treino}
+                    isOwner={false}
+                    showVisibilityBadge={false}
+                    isSaved={true}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* CONTEÚDO: Compartilhados */}
+            <TabsContent
+              value="compartilhados"
+              className="focus-visible:outline-none focus-visible:ring-0 mt-0"
+            >
+              {treinosCompartilhadosMock.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {treinosCompartilhadosMock.map((treino) => (
+                    <TreinoCard
+                      key={treino.id}
+                      treino={treino}
+                      isOwner={false}
+                      showVisibilityBadge={false}
+                      isSaved={false}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-accent/5 border border-border/30 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
+                  <Dumbbell
+                    size={48}
+                    className="text-muted-foreground/50 mb-4"
+                  />
+                  <h4 className="text-white font-headline font-bold text-xl mb-2">
+                    Nenhum treino partilhado
                   </h4>
-                  <p className="text-muted-foreground text-sm flex items-center gap-2 mb-6">
-                    <ListOrdered size={16} />
-                    {plano.exercicios} Exercícios
+                  <p className="text-muted-foreground max-w-md">
+                    Os treinos que os seus amigos enviarem diretamente para si
+                    aparecerão aqui.
                   </p>
                 </div>
-
-                <Link to={`/treino?plano=${plano.id}`}>
-                  <Button
-                    variant="outline"
-                    className="w-full border-border/50 hover:border-[#cafd00] hover:text-[#cafd00] hover:bg-[#cafd00]/5 text-white font-headline font-bold flex justify-center items-center gap-2 transition-all"
-                  >
-                    <Play size={16} fill="currentColor" />
-                    INICIAR
-                  </Button>
-                </Link>
-              </div>
-            ))}
-          </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </section>
 
-        {/* Seção C: Treinos Salvos (Comunidade) */}
-        <section className="bg-accent/5 -mx-6 lg:-mx-10 px-6 lg:px-10 py-12 border-y border-border/30">
-          <h3 className="font-headline text-2xl font-bold tracking-tight text-white mb-6">
-            TREINOS SALVOS (COMUNIDADE)
-          </h3>
-
-          {/* Container alterado para flex-col para empilhar verticalmente */}
-          <div className="flex flex-col gap-4">
-            {treinosSalvosMock.slice(0, visibleSalvos).map((treino, index) => (
-              <div
-                key={treino.id}
-                className={`w-full bg-background border border-border/50 rounded-2xl p-6 border-l-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-accent/10 transition-colors ${index === 0 ? 'border-l-[#cafd00]' : 'border-l-muted-foreground/30'}`}
-              >
-                <div>
-                  <p className="text-xs font-headline text-muted-foreground mb-1 uppercase tracking-wider">
-                    Por {treino.autor}
-                  </p>
-                  <h4 className="font-headline text-lg font-bold text-white mb-3 sm:mb-2 line-clamp-1">
-                    {treino.nome}
-                  </h4>
-                  <div className="flex gap-2">
-                    <span className="text-xs bg-accent/20 px-2 py-1 rounded text-muted-foreground">
-                      {treino.nivel}
-                    </span>
-                    <span className="text-xs bg-accent/20 px-2 py-1 rounded text-muted-foreground">
-                      {treino.tempo}
-                    </span>
-                  </div>
-                </div>
-                <Link
-                  to={`/treinos/${treino.id}`}
-                  className="shrink-0 text-[#cafd00] font-headline text-sm font-bold flex items-center gap-1 hover:text-[#beee00] transition-colors mt-2 sm:mt-0"
-                >
-                  VER DETALHES
-                  <ArrowRight size={16} />
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          {/* Botão de carregar mais, renderizado dinamicamente */}
-          {visibleSalvos < treinosSalvosMock.length && (
-            <div className="mt-8 flex justify-center">
-              <Button
-                variant="outline"
-                onClick={handleCarregarMais}
-                className="border-border/50 hover:border-[#cafd00] hover:text-[#cafd00] text-muted-foreground font-headline font-bold uppercase tracking-widest rounded-xl transition-all"
-              >
-                Carregar Mais Treinos
-              </Button>
-            </div>
-          )}
-        </section>
-
-        {/* Seção D: Histórico de Sessões */}
-        <section className="space-y-6">
-          <h3 className="font-headline text-2xl font-bold tracking-tight text-white">
+        {/* Seção C: Histórico de Sessões */}
+        <section className="space-y-6 pt-6 border-t border-border/30">
+          <h3 className="font-headline text-2xl font-bold tracking-tight text-white uppercase">
             HISTÓRICO DE SESSÕES
           </h3>
           <div className="space-y-3">

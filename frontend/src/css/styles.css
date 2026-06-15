@@ -76,8 +76,7 @@ h6 {
   color: var(--text-main);
 }
 
-/* Exemplo de aplicação em botões e inputs baseados no seu design */
-button {
+/*button {
   font-family: var(--font-body);
   font-weight: 500;
   background-color: var(--primary);
@@ -87,7 +86,7 @@ button {
   padding: 8px 16px;
   cursor: pointer;
   transition: opacity 0.2s ease;
-}
+}*/
 
 button:hover {
   opacity: 0.9;

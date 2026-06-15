@@ -1,0 +1,172 @@
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  MoreVertical,
+  Play,
+  Bookmark,
+  BookmarkMinus,
+  Share2,
+  Lock,
+  Globe,
+  Info,
+  User,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
+export default function TreinoCard({
+  treino,
+  isOwner = false,
+  showVisibilityBadge = false,
+  isSaved = false,
+}) {
+  const isPublic = treino.visibilidade === 'publico'
+  const navigate = useNavigate()
+
+  const handleCardClick = () => {
+    navigate(`/planos/${treino.id || treino._id}`)
+  }
+
+  return (
+    <div
+      onClick={handleCardClick}
+      className="cursor-pointer bg-accent/10 border border-border/50 rounded-2xl p-6 relative group overflow-hidden hover:bg-accent/20 hover:border-[#cafd00]/30 transition-all duration-300 flex flex-col justify-between min-h-[200px]"
+    >
+      {/* Indicador de Status Colorido */}
+      <div
+        className={`absolute left-0 top-0 bottom-0 w-1.5 ${isOwner && isPublic ? 'bg-[#cafd00]' : 'bg-[#cafd00]/50'}`}
+      ></div>
+
+      <div className="flex flex-col flex-grow">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex gap-2 flex-wrap">
+            {showVisibilityBadge && (
+              <span
+                className={`text-xs font-bold px-3 py-1 rounded-full font-headline uppercase tracking-wide ${isPublic ? 'bg-[#cafd00] text-[#4a5e00]' : 'bg-transparent border border-border/30 text-white'}`}
+              >
+                {treino.visibilidade}
+              </span>
+            )}
+
+            {treino.nivel && (
+              <span className="bg-background/80 text-muted-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-border/50">
+                {treino.nivel}
+              </span>
+            )}
+          </div>
+
+          {/* Envolvemos o Dropdown num div com stopPropagation para isolar o clique */}
+          <div onClick={(e) => e.stopPropagation()}>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <button className="text-muted-foreground hover:text-white transition-colors focus:outline-none">
+                  <MoreVertical size={20} />
+                </button>
+              </DropdownMenuTrigger>
+
+              {/* Removido o focus:outline-none daqui para você manter a sua borda azul! */}
+              <DropdownMenuContent
+                align="end"
+                className="w-48 bg-[#1e1e1e] border border-[#2a2a2a] rounded-lg shadow-xl text-white p-1 z-50"
+              >
+                {/* Adicionado asChild e focus:outline-none no item Iniciar */}
+                <DropdownMenuItem
+                  className="cursor-pointer gap-2 font-medium focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
+                  asChild
+                >
+                  <Link
+                    to={`/treino?plano=${treino.id || treino._id}`} // Ajustado o link para igual ao botão principal
+                    className="flex items-center gap-2 w-full"
+                  >
+                    <Play size={16} className="text-[#cafd00]" /> Iniciar
+                  </Link>
+                </DropdownMenuItem>
+
+                {!isOwner && (
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md">
+                    {isSaved ? (
+                      <>
+                        <BookmarkMinus size={16} /> Remover dos Salvos
+                      </>
+                    ) : (
+                      <>
+                        <Bookmark size={16} /> Salvar Treino
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md">
+                  <Share2 size={16} /> Compartilhar
+                </DropdownMenuItem>
+
+                {isOwner && (
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md">
+                    {isPublic ? (
+                      <>
+                        <Lock size={16} /> Tornar Privado
+                      </>
+                    ) : (
+                      <>
+                        <Globe size={16} /> Tornar Público
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuSeparator className="bg-[#2a2a2a]" />
+
+                <DropdownMenuItem
+                  className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
+                  asChild
+                >
+                  <Link
+                    to={`/planos/${treino.id || treino._id}`}
+                    className="flex items-center gap-2 w-full"
+                  >
+                    <Info size={16} /> Ver Detalhes
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Informações Principais */}
+        <div className="mb-6">
+          <h4 className="font-headline text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-[#cafd00] transition-colors">
+            {treino.nome}
+          </h4>
+
+          {!isOwner && treino.autor && (
+            <p className="text-muted-foreground text-sm flex items-center gap-1.5">
+              <User size={14} />
+              Criado por <strong className="text-white">@{treino.autor}</strong>
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Botão de Ação Principal Isolado */}
+      <div
+        className="mt-auto relative z-10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Link to={`/treino?plano=${treino.id || treino._id}`} className="block">
+          <Button
+            variant="outline"
+            className="w-full border-border/50 hover:border-[#cafd00] hover:text-[#cafd00] hover:bg-[#cafd00]/5 text-white font-headline font-bold flex justify-center items-center gap-2 transition-all"
+          >
+            <Play size={16} fill="currentColor" />
+            INICIAR
+          </Button>
+        </Link>
+      </div>
+    </div>
+  )
+}

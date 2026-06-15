@@ -1,15 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import {
   Search,
   Filter,
-  Dumbbell,
-  Calendar,
-  Bookmark,
-  User,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import TreinoCard from '@/components/TreinoCard'
 
 // Dados simulados para o design inicial (sem integração com a API por enquanto)
 const MOCK_PLANOS = [
@@ -79,26 +75,36 @@ export default function Explorar() {
             />
           </div>
 
-          <div className="flex gap-2 h-14 overflow-x-auto pb-1 md:pb-0 hide-scrollbar">
+          {/* Container refatorado para o mobile (quebra de linha automática) */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             {/* Ordenação Rápida */}
-            <div className="flex bg-accent/20 rounded-xl p-1 border border-border/50 min-w-max">
+            <div className="flex bg-accent/20 rounded-xl p-1 border border-border/50 w-full sm:w-max">
               <button
                 onClick={() => setOrdenacao('salvos')}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${ordenacao === 'salvos' ? 'bg-[#cafd00] text-[#4a5e00] shadow-sm' : 'text-muted-foreground hover:text-white'}`}
+                className={`flex-1 sm:flex-none flex items-center justify-center px-2 sm:px-4 py-2.5 rounded-lg text-[13px] sm:text-sm font-bold transition-all whitespace-nowrap ${
+                  ordenacao === 'salvos'
+                    ? 'bg-[#cafd00] text-[#4a5e00] shadow-sm'
+                    : 'text-muted-foreground hover:text-white'
+                }`}
               >
                 Mais Salvos
               </button>
               <button
                 onClick={() => setOrdenacao('recentes')}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${ordenacao === 'recentes' ? 'bg-[#cafd00] text-[#4a5e00] shadow-sm' : 'text-muted-foreground hover:text-white'}`}
+                className={`flex-1 sm:flex-none flex items-center justify-center px-2 sm:px-4 py-2.5 rounded-lg text-[13px] sm:text-sm font-bold transition-all whitespace-nowrap ${
+                  ordenacao === 'recentes'
+                    ? 'bg-[#cafd00] text-[#4a5e00] shadow-sm'
+                    : 'text-muted-foreground hover:text-white'
+                }`}
               >
                 Mais Recentes
               </button>
             </div>
 
+            {/* Filtros agora ocupa a largura toda no mobile e alinha-se à direita no desktop */}
             <Button
               variant="outline"
-              className="h-full px-5 bg-accent/20 border-border/50 rounded-xl text-white hover:text-[#cafd00] hover:border-[#cafd00]/50 transition-colors"
+              className="w-full sm:w-auto h-auto min-h-[48px] md:h-14 px-5 bg-accent/20 border-border/50 rounded-xl text-white hover:text-[#cafd00] hover:border-[#cafd00]/50 transition-colors font-bold"
             >
               <Filter size={20} className="mr-2" />
               Filtros
@@ -108,61 +114,25 @@ export default function Explorar() {
 
         {/* Grade de Treinos da Comunidade */}
         <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {MOCK_PLANOS.map((plano) => (
-            <Link
-              key={plano._id}
-              to={`/treinos/${plano._id}`}
-              className="group block h-full"
-            >
-              <div className="bg-accent/10 border border-border/50 rounded-2xl p-6 flex flex-col h-full hover:bg-accent/20 hover:border-[#cafd00]/50 transition-all duration-300 relative overflow-hidden">
-                {/* Efeito Hover */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#cafd00] to-[#beee00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          {MOCK_PLANOS.map((plano) => {
+            // Adaptando o dado mockado para o formato que o card espera,
+            // se o banco retornar formatos diferentes
+            const treinoAdaptado = {
+              ...plano,
+              id: plano._id,
+              autor: plano.usuarioId.username,
+            }
 
-                <div className="flex justify-between items-start mb-4">
-                  <span className="bg-background/80 text-muted-foreground text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-border/50">
-                    {plano.nivel}
-                  </span>
-                  <div className="flex items-center gap-1.5 text-[#cafd00] bg-[#cafd00]/10 px-3 py-1.5 rounded-lg border border-[#cafd00]/20">
-                    <Bookmark size={16} fill="currentColor" />
-                    <span className="text-sm font-bold">
-                      {plano.totalSalvamentos}
-                    </span>
-                  </div>
-                </div>
-
-                <h3 className="text-xl font-headline font-black text-white mb-2 group-hover:text-[#cafd00] transition-colors line-clamp-2">
-                  {plano.nome}
-                </h3>
-
-                <div className="flex items-center gap-2 text-muted-foreground text-sm mb-6">
-                  <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center border border-border">
-                    <User size={12} className="text-white" />
-                  </div>
-                  <span>
-                    Criado por{' '}
-                    <strong className="text-white hover:underline decoration-[#cafd00] decoration-2 underline-offset-2">
-                      @{plano.usuarioId.username}
-                    </strong>
-                  </span>
-                </div>
-
-                <div className="mt-auto flex items-center justify-between text-muted-foreground text-sm pt-5 border-t border-border/20">
-                  <div className="flex items-center gap-2">
-                    <Dumbbell size={16} className="text-[#cafd00]/70" />
-                    <span className="font-medium">
-                      {plano.exercicios.length} exercícios
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar size={16} className="text-white/50" />
-                    <span>
-                      {new Date(plano.createdAt).toLocaleDateString('pt-BR')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+            return (
+              <TreinoCard
+                key={treinoAdaptado.id}
+                treino={treinoAdaptado}
+                isOwner={false}
+                showVisibilityBadge={false}
+                isSaved={false} // Lógica sua para checar se o usuário atual já salvou
+              />
+            )
+          })}
         </section>
       </div>
     </main>
