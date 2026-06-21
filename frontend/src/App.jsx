@@ -11,6 +11,7 @@ import Perfil from './pages/Perfil'
 import PrivateRoutesLayout from './components/layouts/PrivateRoutesLayout'
 import Explorar from './pages/Explorar'
 import Treinos from './pages/Treinos'
+import Exercicios from './pages/Exercicios'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/explorar" element={<Explorar />} />
             <Route path="/treinos" element={<Treinos />} />
+            <Route path="/exercicios" element={<Exercicios />} />
             <Route path="/perfil" element={<Perfil />} />
           </Route>
         </Route>
