@@ -9,8 +9,25 @@ import {
   Flame,
   Plus,
   Search,
-  ChevronRight,
 } from 'lucide-react'
+import SessaoCard from '@/components/SessaoCard'
+import ActionCard from '@/components/ActionCard'
+import StatCard from '@/components/StatCard'
+
+const historicoRecente = [
+  {
+    id: 's1',
+    nome: 'Hipertrofia A - Peito e Tríceps',
+    data: 'Ontem',
+    duracao: '55 min',
+  },
+  {
+    id: 's2',
+    nome: 'Costas & Bíceps Pesado',
+    data: '12 Out 2026',
+    duracao: '62 min',
+  },
+]
 
 export default function Dashboard() {
   const [usuario, setUsuario] = useState(null)
@@ -138,20 +155,28 @@ export default function Dashboard() {
               Últimos Treinos
             </h2>
 
-            <div className="bg-accent/10 border border-border/50 rounded-3xl p-10 flex flex-col items-center justify-center text-center space-y-5 h-[300px]">
-              <div className="w-20 h-20 bg-background/50 rounded-full flex items-center justify-center border border-border/50">
-                <Dumbbell className="text-muted-foreground/50" size={40} />
+            {historicoRecente.length > 0 ? (
+              <div className="space-y-3">
+                {historicoRecente.map((sessao) => (
+                  <SessaoCard key={sessao.id} sessao={sessao} />
+                ))}
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white font-headline">
-                  Nenhum treino registrado
-                </h3>
-                <p className="text-muted-foreground text-sm max-w-sm mt-2 mx-auto">
-                  Você ainda não registrou nenhum treino. Inicie um treino livre
-                  agora mesmo para começar a gerar estatísticas!
-                </p>
+            ) : (
+              <div className="bg-accent/10 border border-border/50 rounded-3xl p-10 flex flex-col items-center justify-center text-center space-y-5 h-[300px]">
+                <div className="w-20 h-20 bg-background/50 rounded-full flex items-center justify-center border border-border/50">
+                  <Dumbbell className="text-muted-foreground/50" size={40} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white font-headline">
+                    Nenhum treino registrado
+                  </h3>
+                  <p className="text-muted-foreground text-sm max-w-sm mt-2 mx-auto">
+                    Você ainda não registrou nenhum treino. Inicie um treino
+                    livre agora mesmo para começar a gerar estatísticas!
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Explorar */}
@@ -162,61 +187,19 @@ export default function Dashboard() {
             </h2>
             <div className="flex flex-col gap-4">
               <ActionCard
+                title="Explorar a Comunidade"
+                desc="Descubra novos treinos e desafie-se com a galera"
+                to="/explorar"
+              />
+              <ActionCard
                 title="Banco de Exercícios"
                 desc="Filtre e descubra novos movimentos"
                 to="/exercicios"
-              />
-              <ActionCard
-                title="Treinos da Comunidade"
-                desc="Descubra o que a galera está treinando"
-                to="/comunidade"
               />
             </div>
           </div>
         </div>
       </div>
     </main>
-  )
-}
-
-function StatCard({ icon, title, value, subtitle }) {
-  return (
-    <div className="bg-accent/10 border border-border/50 rounded-2xl p-6 flex flex-col space-y-3 relative overflow-hidden group hover:bg-accent/20 hover:border-[#cafd00]/30 transition-all duration-300">
-      <div className="flex justify-between items-start z-10">
-        <span className="text-muted-foreground font-bold text-xs tracking-widest uppercase">
-          {title}
-        </span>
-        {icon}
-      </div>
-      <div className="pt-2 z-10">
-        <h3 className="text-4xl font-black text-white font-headline tracking-tighter">
-          {value}
-        </h3>
-        <p className="text-muted-foreground text-sm mt-1 font-medium">
-          {subtitle}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function ActionCard({ title, desc, to }) {
-  return (
-    <Link to={to} className="block group">
-      <div className="bg-accent/10 border border-border/50 rounded-2xl p-6 flex items-center justify-between hover:bg-[#cafd00]/5 hover:border-[#cafd00]/50 transition-all duration-300 cursor-pointer">
-        <div>
-          <h4 className="text-white font-bold font-headline text-lg group-hover:text-[#cafd00] transition-colors">
-            {title}
-          </h4>
-          <p className="text-muted-foreground text-sm mt-1">{desc}</p>
-        </div>
-        <div className="w-10 h-10 rounded-full bg-background border border-border/50 flex items-center justify-center group-hover:bg-[#cafd00]/20 group-hover:border-[#cafd00]/50 transition-all">
-          <ChevronRight
-            className="text-muted-foreground group-hover:text-[#cafd00]"
-            size={20}
-          />
-        </div>
-      </div>
-    </Link>
   )
 }

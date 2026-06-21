@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Dumbbell, Search, LineChart, Users } from 'lucide-react'
+import FeatureCard from '@/components/FeatureCard'
 
 export default function Home() {
   return (
@@ -62,56 +63,32 @@ export default function Home() {
       <section className="w-full max-w-7xl mx-auto px-6 pb-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1 */}
-          <div className="bg-accent/30 border border-muted-foreground/20 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 hover:border-[#cafd00]/50 hover:bg-accent/50 transition-all duration-300 group cursor-default">
-            <div className="w-14 h-14 bg-[#cafd00]/10 rounded-full flex items-center justify-center text-[#cafd00] mb-2 group-hover:scale-110 transition-transform">
-              <Dumbbell size={28} />
-            </div>
-            <h3 className="text-xl font-bold text-white">
-              Registre seus Treinos
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              Anote séries, repetições e cargas. Inicie treinos com cronômetro
-              integrado.
-            </p>
-          </div>
+          <FeatureCard
+            icon={<Dumbbell size={28} />}
+            title="Registre seus Treinos"
+            description="Anote séries, repetições e cargas. Inicie treinos com cronômetro integrado."
+          />
 
           {/* Card 2 */}
-          <div className="bg-accent/30 border border-muted-foreground/20 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 hover:border-[#cafd00]/50 hover:bg-accent/50 transition-all duration-300 group cursor-default">
-            <div className="w-14 h-14 bg-[#cafd00]/10 rounded-full flex items-center justify-center text-[#cafd00] mb-2 group-hover:scale-110 transition-transform">
-              <Search size={28} />
-            </div>
-            <h3 className="text-xl font-bold text-white">Explore Exercícios</h3>
-            <p className="text-muted-foreground text-sm">
-              Filtre por grupo muscular e descubra novos movimentos para a sua
-              rotina.
-            </p>
-          </div>
+          <FeatureCard
+            icon={<Search size={28} />}
+            title="Explore Exercícios"
+            description="Filtre por grupo muscular e descubra novos movimentos para a sua rotina."
+          />
 
           {/* Card 3 */}
-          <div className="bg-accent/30 border border-muted-foreground/20 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 hover:border-[#cafd00]/50 hover:bg-accent/50 transition-all duration-300 group cursor-default">
-            <div className="w-14 h-14 bg-[#cafd00]/10 rounded-full flex items-center justify-center text-[#cafd00] mb-2 group-hover:scale-110 transition-transform">
-              <LineChart size={28} />
-            </div>
-            <h3 className="text-xl font-bold text-white">
-              Acompanhe Progresso
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              Visualize sua evolução de cargas e frequência com dashboards
-              intuitivos.
-            </p>
-          </div>
+          <FeatureCard
+            icon={<LineChart size={28} />}
+            title="Acompanhe Progresso"
+            description="Visualize sua evolução de cargas e frequência com dashboards intuitivos."
+          />
 
           {/* Card 4 */}
-          <div className="bg-accent/30 border border-muted-foreground/20 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 hover:border-[#cafd00]/50 hover:bg-accent/50 transition-all duration-300 group cursor-default">
-            <div className="w-14 h-14 bg-[#cafd00]/10 rounded-full flex items-center justify-center text-[#cafd00] mb-2 group-hover:scale-110 transition-transform">
-              <Users size={28} />
-            </div>
-            <h3 className="text-xl font-bold text-white">Comunidade</h3>
-            <p className="text-muted-foreground text-sm">
-              Compartilhe rotinas e descubra os treinos de outros usuários
-              facilmente.
-            </p>
-          </div>
+          <FeatureCard
+            icon={<Users size={28} />}
+            title="Comunidade"
+            description="Compartilhe rotinas e descubra os treinos de outros usuários facilmente."
+          />
         </div>
       </section>
 

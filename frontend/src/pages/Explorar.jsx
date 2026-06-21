@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Search,
   Filter,
+  Dumbbell,
+  ChevronRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -49,15 +52,36 @@ export default function Explorar() {
 
       {/* Container principal padronizado com as outras telas */}
       <div className="relative z-10 max-w-6xl mx-auto flex flex-col space-y-12 pb-20">
-        <header className="space-y-2 pt-4">
-          <h1 className="text-3xl md:text-4xl font-headline font-black text-white flex items-center gap-3">
-            <Search className="text-[#cafd00]" size={32} />
-            Explorar Comunidade
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Descubra treinos criados por outros usuários e salve para a sua
-            rotina.
-          </p>
+        <header className="pt-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl md:text-4xl font-headline font-black text-white flex items-center gap-3">
+              <Search className="text-[#cafd00]" size={32} />
+              Explorar Comunidade
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Descubra treinos criados por outros usuários e salve para a sua
+              rotina.
+            </p>
+          </div>
+
+          <Link to="/exercicios" className="block group w-full md:w-auto shrink-0">
+            <div className="bg-accent/10 border border-border/50 rounded-2xl p-4 sm:p-5 flex items-center justify-between hover:bg-[#cafd00]/5 hover:border-[#cafd00]/50 transition-all duration-300 gap-4 md:min-w-[300px]">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-background border border-border/50 flex items-center justify-center group-hover:bg-[#cafd00]/20 group-hover:border-[#cafd00]/50 transition-all shrink-0">
+                  <Dumbbell className="text-muted-foreground group-hover:text-[#cafd00]" size={24} />
+                </div>
+                <div>
+                  <h4 className="text-white font-bold font-headline text-lg group-hover:text-[#cafd00] transition-colors">
+                    Banco de Exercícios
+                  </h4>
+                  <p className="text-muted-foreground text-sm">
+                    Consulte o nosso catálogo
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="text-muted-foreground group-hover:text-[#cafd00] shrink-0" size={20} />
+            </div>
+          </Link>
         </header>
 
         {/* Barra de Busca e Ações Rápidas */}
