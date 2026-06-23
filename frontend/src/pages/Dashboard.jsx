@@ -2,14 +2,7 @@ import { useState, useEffect } from 'react'
 import api from '@/services/api'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import {
-  Activity,
-  Calendar,
-  Dumbbell,
-  Flame,
-  Plus,
-  Search,
-} from 'lucide-react'
+import { Activity, Calendar, Dumbbell, Flame, Plus, Search } from 'lucide-react'
 import SessaoCard from '@/components/SessaoCard'
 import ActionCard from '@/components/ActionCard'
 import StatCard from '@/components/StatCard'
@@ -46,14 +39,11 @@ export default function Dashboard() {
           return
         }
 
-        const response = await api.get(
-          '/usuarios/perfil',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+        const response = await api.get('/usuarios/perfil', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
 
         setUsuario(response.data)
       } catch (err) {
@@ -99,6 +89,18 @@ export default function Dashboard() {
 
   const primeiroNome = usuario?.nome?.split(' ')[0] || 'Atleta'
 
+  const getSaudacao = () => {
+    const horaAtual = new Date().getHours()
+    if (horaAtual >= 6 && horaAtual < 12) {
+      return 'Bom dia'
+    } else if (horaAtual >= 12 && horaAtual < 18) {
+      return 'Boa tarde'
+    } else {
+      return 'Boa noite'
+    }
+  }
+  const saudacao = getSaudacao()
+
   return (
     <main className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-background">
       {/* Luzes de fundo decorativas */}
@@ -110,7 +112,8 @@ export default function Dashboard() {
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-4">
           <div className="space-y-2">
             <h1 className="text-4xl md:text-5xl font-headline font-black tracking-tight text-white">
-              Bem-vindo, <span className="text-[#cafd00]">{primeiroNome}</span>!
+              {saudacao}, <span className="text-[#cafd00]">{primeiroNome}</span>
+              !
             </h1>
             <p className="text-muted-foreground font-medium text-lg">
               Pronto para superar seus limites hoje?
