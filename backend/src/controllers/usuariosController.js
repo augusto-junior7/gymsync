@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import Usuario from '../models/Usuario.js'
+import crypto from 'crypto'
+import { enviarEmailRec } from '../services/emailService.js'
 
 // POST /usuarios/registrar
 export const registrar = async (req, res) => {
@@ -173,5 +175,63 @@ export const atualizar = async (req, res) => {
     return res
       .status(500)
       .json({ message: 'Erro ao realizar atualização.', erro: erro.message })
+  }
+}
+
+export const solicitarRecuperacaoSenha = async (req, res) => {
+  try {
+    const { email } = req.body
+
+    const usuario = await Usuario.findOne({ email: email })
+
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' })
+    }
+
+    // geração de um token em formato string
+    const tokenTemporario = crypto.randomBytes(32).toString('hex')
+
+    // a validade do token no banco de dados é de 1 hora a partir do envio do email
+    const validadeToken = new Date(Date.now() + 3600000)
+
+    // atualiza os atributos no cadastro do usuario
+    usuario.reset_senha_token = tokenTemporario
+    usuario.reset_senha_expiracao = validadeToken
+    await usuario.save()
+
+    await enviarEmailRec(usuario.email, tokenTemporario)
+
+    res.status(200).json({ message: 'Link de recuperação enviado com sucesso' })
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Erro ao realizar recuperação.', erro: error.message })
+  }
+}
+
+export const redefinirSenha = async (req, res) => {
+  try {
+    const { token, novaSenha } = req.body
+
+    const usuario = await Usuario.findOne({
+      reset_senha_token: token,
+      reset_senha_expiracao: { $gt: Date.now() },
+    })
+
+    if (!usuario) {
+      return res.status(400).json({ message: 'Token invalido ou expirado.' })
+    }
+
+    const senhaHash = await bcrypt.hash(novaSenha, 10)
+
+    usuario.senha = senhaHash
+    usuario.reset_senha_expiracao = undefined
+    usuario.reset_senha_token = undefined
+    await usuario.save()
+    res.status(200).json({ message: 'Senha redefinida com sucesso!' })
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Erro ao redefinir senha', erro: error.message })
   }
 }

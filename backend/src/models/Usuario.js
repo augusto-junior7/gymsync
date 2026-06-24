@@ -36,6 +36,16 @@ const usuarioSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // cria createdAt e updatedAt automaticamente
+  },
+  {
+    reset_senha_token: {
+      // Cria um token temporario para redefinir a senha
+      type: String,
+    },
+    reset_senha_expiracao: {
+      // tempo para expirar o token de redefinição de senha
+      type: Date,
+    },
   }
 )
 

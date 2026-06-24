@@ -4,15 +4,22 @@ import {
   registrar,
   login,
   atualizar,
+  redefinirSenha,
+  solicitarRecuperacaoSenha
 } from '../controllers/usuariosController.js'
 import autenticar from '../middlewares/autenticar.js'
 
 const router = Router()
 
-router.put('/atualizar', autenticar, atualizar)
 
 router.post('/registrar', registrar)
 router.post('/login', login)
+
+router.put('/atualizar', autenticar, atualizar)
+router.post('/esqueci-senha', solicitarRecuperacaoSenha)
+router.post('/redefinir-senha', redefinirSenha)
+
+
 
 router.get('/perfil', autenticar, getPerfil)
 
