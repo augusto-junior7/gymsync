@@ -1,4 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   MoreVertical,
   Play,
@@ -18,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import TreinoModal from '@/components/TreinoModal'
 
 export default function TreinoCard({
   treino,
@@ -26,17 +28,18 @@ export default function TreinoCard({
   isSaved = false,
 }) {
   const isPublic = treino.visibilidade === 'publico'
-  const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleCardClick = () => {
-    navigate(`/planos/${treino.id || treino._id}`)
+    setIsModalOpen(true)
   }
 
   return (
-    <div
-      onClick={handleCardClick}
-      className="cursor-pointer bg-accent/10 border border-border/50 rounded-2xl p-6 relative group overflow-hidden hover:bg-accent/20 hover:border-[#cafd00]/30 transition-all duration-300 flex flex-col justify-between min-h-[200px]"
-    >
+    <>
+      <div
+        onClick={handleCardClick}
+        className="cursor-pointer bg-accent/10 border border-border/50 rounded-2xl p-6 relative group overflow-hidden hover:bg-accent/20 hover:border-[#cafd00]/30 transition-all duration-300 flex flex-col justify-between min-h-[200px]"
+      >
       {/* Indicador de Status Colorido */}
       <div
         className={`absolute left-0 top-0 bottom-0 w-1.5 ${isOwner && isPublic ? 'bg-[#cafd00]' : 'bg-[#cafd00]/50'}`}
@@ -123,14 +126,9 @@ export default function TreinoCard({
 
                 <DropdownMenuItem
                   className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
-                  asChild
+                  onClick={() => setIsModalOpen(true)}
                 >
-                  <Link
-                    to={`/planos/${treino.id || treino._id}`}
-                    className="flex items-center gap-2 w-full"
-                  >
-                    <Info size={16} /> Ver Detalhes
-                  </Link>
+                  <Info size={16} /> Ver Detalhes
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -168,5 +166,12 @@ export default function TreinoCard({
         </Link>
       </div>
     </div>
+
+      <TreinoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        treino={treino}
+      />
+    </>
   )
 }

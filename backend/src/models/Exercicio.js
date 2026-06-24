@@ -16,7 +16,7 @@ const exercicioSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ['beginner', 'intermediate', 'expert'],
+      enum: ['iniciante', 'intermediário', 'avançado'],
     },
     mecanica: {
       type: String,
