@@ -5,6 +5,7 @@ import PrivateRoutes from './components/routes/PrivateRoute'
 /* Importação das Páginas */
 import Home from './pages/Home'
 import Login from './pages/Login'
+import EsqueciSenha from './pages/EsqueciSenha'
 import Registrar from './pages/Registrar'
 import Dashboard from './pages/Dashboard'
 import Perfil from './pages/Perfil'
@@ -24,6 +25,7 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
+          <Route path="/recuperação-senha" element={<EsqueciSenha />} />
         </Route>
 
         {/* Rotas Privadas - Apenas usuários autenticados podem acessar. */}
