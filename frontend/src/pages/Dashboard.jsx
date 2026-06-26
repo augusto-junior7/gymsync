@@ -123,28 +123,6 @@ export default function Dashboard() {
           </Link>
         </header>
 
-        {/* Grade de Estatísticas */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-          <StatCard
-            icon={<Flame size={24} className="text-orange-500" />}
-            title="Sequência Atual"
-            value="0 dias"
-            subtitle="Faça um treino hoje!"
-          />
-          <StatCard
-            icon={<Dumbbell size={24} className="text-[#cafd00]" />}
-            title="Treinos no Mês"
-            value="0"
-            subtitle="Sua meta é 12"
-          />
-          <StatCard
-            icon={<Activity size={24} className="text-blue-400" />}
-            title="Carga Movimentada"
-            value="0 kg"
-            subtitle="Volume total este mês"
-          />
-        </section>
-
         {/* Conteúdo Principal e Ações Rápidas */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Atividades Recentes */}
