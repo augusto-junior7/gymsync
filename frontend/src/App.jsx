@@ -6,6 +6,7 @@ import PrivateRoutes from './components/routes/PrivateRoute'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import EsqueciSenha from './pages/EsqueciSenha'
+import RedefinirSenha from './pages/RedefinirSenha'
 import Registrar from './pages/Registrar'
 import Dashboard from './pages/Dashboard'
 import Perfil from './pages/Perfil'
@@ -29,6 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
           <Route path="/recuperacao-senha" element={<EsqueciSenha />} />
+          <Route path="/redefinir-senha/:token" element={<RedefinirSenha />} />
         </Route>
 
         {/* Rotas Privadas - Apenas usuários autenticados podem acessar. */}
@@ -40,7 +42,7 @@ function App() {
             <Route path="/exercicios" element={<Exercicios />} />
             <Route path="/perfil" element={<Perfil />} />
           </Route>
-          
+
           {/* Rotas Privadas (Sem Navbar no Mobile) */}
           <Route element={<SubpageLayout />}>
             <Route path="/criar-treino" element={<CriarTreino />} />

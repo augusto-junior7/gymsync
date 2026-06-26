@@ -33,11 +33,6 @@ const usuarioSchema = new mongoose.Schema(
       minlength: 8, // senha deve ter pelo menos 8 caracteres
       select: false,
     },
-  },
-  {
-    timestamps: true, // cria createdAt e updatedAt automaticamente
-  },
-  {
     reset_senha_token: {
       // Cria um token temporario para redefinir a senha
       type: String,
@@ -46,6 +41,9 @@ const usuarioSchema = new mongoose.Schema(
       // tempo para expirar o token de redefinição de senha
       type: Date,
     },
+  },
+  {
+    timestamps: true, // cria createdAt e updatedAt automaticamente
   }
 )
 

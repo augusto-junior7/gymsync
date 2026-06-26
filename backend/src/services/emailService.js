@@ -14,7 +14,7 @@ const transportador = nodemailer.createTransport({
 
 export const enviarEmailRec = async (emailDestino, token) => {
   const URL_BASE = process.env.FRONTEND_URL
-  const linkRec = `${URL_BASE}/redefinir-senha?token=${token}`
+  const linkRec = `${URL_BASE}/redefinir-senha/${token}`
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -36,4 +36,3 @@ export const enviarEmailRec = async (emailDestino, token) => {
     throw new Error('Falha no envio do e-mail de recuperação')
   }
 }
-
