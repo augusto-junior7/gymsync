@@ -3,6 +3,7 @@ import {
   criarPlano,
   meusPlanosf,
   planosSalvos,
+  planosCompartilhados,
   explorarPlanos,
   planoPorId,
   atualizarPlano,
@@ -19,6 +20,7 @@ router.use(autenticar)
 // Rotas de listagem específica (devem vir antes de /:id para não conflitar)
 router.get('/meus', meusPlanosf)
 router.get('/salvos', planosSalvos)
+router.get('/compartilhados', planosCompartilhados)
 router.get('/explorar', explorarPlanos)
 
 // Rotas de criação

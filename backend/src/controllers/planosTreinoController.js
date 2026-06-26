@@ -69,6 +69,28 @@ export const planosSalvos = async (req, res) => {
   }
 }
 
+// GET /planos/compartilhados
+// Lista os planos que o usuário tem acesso por compartilhamento
+export const planosCompartilhados = async (req, res) => {
+  try {
+    const planos = await PlanoTreino.find({
+      compartilhadoCom: req.usuarioId,
+    })
+      .populate('usuarioId', 'nome username') // traz nome e username do criador
+      .sort({ createdAt: -1 })
+
+    return res.status(200).json({
+      quantidade: planos.length,
+      dados: planos,
+    })
+  } catch (erro) {
+    console.error('Erro ao buscar planos compartilhados:', erro)
+    return res
+      .status(500)
+      .json({ mensagem: 'Erro ao buscar planos compartilhados.', erro: erro.message })
+  }
+}
+
 // GET /planos/explorar
 // Lista todos os planos públicos para a tela de comunidade.
 // Suporta ordenação por ?ordem=recentes (padrão) ou ?ordem=salvos

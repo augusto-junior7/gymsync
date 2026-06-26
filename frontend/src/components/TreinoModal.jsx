@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -158,7 +157,7 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="w-full border-border/50 text-white hover:bg-white/5"
+              className="w-full h-12 border-border/50 text-white hover:bg-white/5 hover:text-white font-headline font-bold uppercase tracking-wider text-sm rounded-xl"
             >
               Fechar
             </Button>

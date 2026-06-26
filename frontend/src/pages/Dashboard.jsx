@@ -39,11 +39,7 @@ export default function Dashboard() {
           return
         }
 
-        const response = await api.get('/usuarios/perfil', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        const response = await api.get('/usuarios/perfil')
 
         setUsuario(response.data)
       } catch (err) {

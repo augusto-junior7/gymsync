@@ -10,9 +10,12 @@ import Registrar from './pages/Registrar'
 import Dashboard from './pages/Dashboard'
 import Perfil from './pages/Perfil'
 import PrivateRoutesLayout from './components/layouts/PrivateRoutesLayout'
+import SubpageLayout from './components/layouts/SubpageLayout'
 import Explorar from './pages/Explorar'
 import Treinos from './pages/Treinos'
 import Exercicios from './pages/Exercicios'
+import CriarTreino from './pages/CriarTreino'
+import Treino from './pages/Treino'
 
 function App() {
   return (
@@ -36,6 +39,13 @@ function App() {
             <Route path="/treinos" element={<Treinos />} />
             <Route path="/exercicios" element={<Exercicios />} />
             <Route path="/perfil" element={<Perfil />} />
+          </Route>
+          
+          {/* Rotas Privadas (Sem Navbar no Mobile) */}
+          <Route element={<SubpageLayout />}>
+            <Route path="/criar-treino" element={<CriarTreino />} />
+            <Route path="/treino/" element={<Treino />} />
+            <Route path="/treino/:id" element={<Treino />} />
           </Route>
         </Route>
       </Routes>

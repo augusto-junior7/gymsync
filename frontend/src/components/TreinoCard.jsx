@@ -141,10 +141,10 @@ export default function TreinoCard({
             {treino.nome}
           </h4>
 
-          {!isOwner && treino.autor && (
+          {!isOwner && (treino.autor || treino.usuarioId?.username) && (
             <p className="text-muted-foreground text-sm flex items-center gap-1.5">
               <User size={14} />
-              Criado por <strong className="text-white">@{treino.autor}</strong>
+              Criado por <strong className="text-white">@{treino.autor || treino.usuarioId?.username}</strong>
             </p>
           )}
         </div>
