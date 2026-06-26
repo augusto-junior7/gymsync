@@ -100,7 +100,7 @@ export default function Login() {
                   Senha
                 </Label>
                 <Link
-                  to="/recuperação-senha"
+                  to="/recuperacao-senha"
                   href="#"
                   className="text-xs font-bold text-[#cafd00] hover:text-[#beee00] transition-colors uppercase"
                 >

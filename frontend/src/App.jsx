@@ -28,7 +28,7 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
-          <Route path="/recuperação-senha" element={<EsqueciSenha />} />
+          <Route path="/recuperacao-senha" element={<EsqueciSenha />} />
         </Route>
 
         {/* Rotas Privadas - Apenas usuários autenticados podem acessar. */}

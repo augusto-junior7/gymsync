@@ -18,7 +18,7 @@ export default function EsqueciSenha() {
 
     try {
       await api.post(
-        '/usuarios/recuperação-senha',
+        '/usuarios/recuperacao-senha',
         { email },
         { timeout: 5000 }
       )
