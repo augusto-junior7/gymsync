@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   MoreVertical,
@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import TreinoModal from '@/components/TreinoModal'
+import api from '@/services/api'
 
 export default function TreinoCard({
   treino,
@@ -27,8 +28,47 @@ export default function TreinoCard({
   showVisibilityBadge = false,
   isSaved = false,
 }) {
-  const isPublic = treino.visibilidade === 'publico'
+  const [visibilidade, setVisibilidade] = useState(treino.visibilidade)
+  const [salvo, setSalvo] = useState(isSaved)
+  const isPublic = visibilidade === 'publico'
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // Sincroniza o estado local caso os dados venham atualizados da API em novas requisições
+  useEffect(() => {
+    setSalvo(isSaved)
+  }, [isSaved])
+
+  useEffect(() => {
+    setVisibilidade(treino.visibilidade)
+  }, [treino.visibilidade])
+
+  const handleToggleVisibility = async () => {
+    try {
+      const novaVisibilidade = isPublic ? 'privado' : 'publico'
+      const id = treino.id || treino._id
+      
+      setVisibilidade(novaVisibilidade)
+      
+      await api.patch(`/planos/${id}`, { visibilidade: novaVisibilidade })
+    } catch (error) {
+      console.error('Erro ao atualizar visibilidade:', error)
+      setVisibilidade(isPublic ? 'publico' : 'privado')
+    }
+  }
+
+  const handleToggleSave = async () => {
+    try {
+      const novoSalvo = !salvo
+      const id = treino.id || treino._id
+      
+      setSalvo(novoSalvo)
+      
+      await api.patch(`/planos/${id}/salvar`)
+    } catch (error) {
+      console.error('Erro ao salvar/remover treino:', error)
+      setSalvo(salvo)
+    }
+  }
 
   const handleCardClick = () => {
     setIsModalOpen(true)
@@ -52,7 +92,7 @@ export default function TreinoCard({
               <span
                 className={`text-xs font-bold px-3 py-1 rounded-full font-headline uppercase tracking-wide ${isPublic ? 'bg-[#cafd00] text-[#4a5e00]' : 'bg-transparent border border-border/30 text-white'}`}
               >
-                {treino.visibilidade}
+                {visibilidade}
               </span>
             )}
 
@@ -91,8 +131,11 @@ export default function TreinoCard({
                 </DropdownMenuItem>
 
                 {!isOwner && (
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md">
-                    {isSaved ? (
+                  <DropdownMenuItem 
+                    className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
+                    onClick={handleToggleSave}
+                  >
+                    {salvo ? (
                       <>
                         <BookmarkMinus size={16} /> Remover dos Salvos
                       </>
@@ -109,7 +152,10 @@ export default function TreinoCard({
                 </DropdownMenuItem>
 
                 {isOwner && (
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md">
+                  <DropdownMenuItem 
+                    className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
+                    onClick={handleToggleVisibility}
+                  >
                     {isPublic ? (
                       <>
                         <Lock size={16} /> Tornar Privado

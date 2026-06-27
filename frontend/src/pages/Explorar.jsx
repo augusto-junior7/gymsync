@@ -144,9 +144,9 @@ export default function Explorar() {
               <TreinoCard
                 key={plano._id}
                 treino={plano}
-                isOwner={false}
+                isOwner={plano.isOwner || false}
                 showVisibilityBadge={false}
-                isSaved={false} // Futuramente, você pode verificar se o usuário logado salvou este plano
+                isSaved={plano.isSaved || false}
               />
             ))}
           </section>

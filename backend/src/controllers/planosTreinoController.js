@@ -114,6 +114,8 @@ export const explorarPlanos = async (req, res) => {
     const planosComContagem = planos.map((plano) => ({
       ...plano.toObject(),
       totalSalvamentos: plano.salvoPor.length,
+      isSaved: plano.salvoPor.some((uid) => uid.toString() === req.usuarioId),
+      isOwner: plano.usuarioId?._id?.toString() === req.usuarioId
     }))
 
     return res.status(200).json({
