@@ -38,6 +38,14 @@ const exercicioSchema = new mongoose.Schema(
       type: [String],
       required: true,
     },
+    categoria: {
+      type: String,
+      default: null,
+    },
+    imagens: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true, // cria createdAt e updatedAt automaticamente

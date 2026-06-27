@@ -17,33 +17,40 @@ async function seed() {
 
     const caminhoJson = path.resolve(__dirname, './data/exercicios.json')
 
-    // Lendo o JSON de exercícios e transformando em arquivo json novamente
+    // Lendo o JSON de exercícios
     const dadosBrutos = fs.readFileSync(caminhoJson, 'utf-8')
-    const exerciciosIngles = JSON.parse(dadosBrutos)
+    const exerciciosJson = JSON.parse(dadosBrutos)
 
     console.log(
-      `Encontrados ${exerciciosIngles.length} exercícios. Traduzindo...`
+      `Encontrados ${exerciciosJson.length} exercícios. Formatando dados...`
     )
 
-    // Traduzindo os nomes dos atributos do Json orighinal para o portugues
-    const exerciciosPortugues = exerciciosIngles.map((ex) => {
+    // Mapeando os nomes dos atributos do JSON para o formato do Schema (em português)
+    const exerciciosFormatados = exerciciosJson.map((ex) => {
+      // Garantir que os níveis tenham acento conforme o enum do Schema
+      let nivelAjustado = ex.level;
+      if (nivelAjustado === 'intermediario') nivelAjustado = 'intermediário';
+      if (nivelAjustado === 'avancado') nivelAjustado = 'avançado';
+
       return {
         nome: ex.name,
         forca: ex.force || null,
-        nivel: ex.level,
+        nivel: nivelAjustado,
         mecanica: ex.mechanic || null,
         equipamento: ex.equipment || null,
         musculosPrincipais: ex.primaryMuscles,
         musculosSecundarios: ex.secondaryMuscles || [],
         instrucoes: ex.instructions,
+        categoria: ex.category || null,
+        imagens: ex.images || [],
       }
     })
 
     await Exercicio.deleteMany()
 
-    await Exercicio.insertMany(exerciciosPortugues)
+    await Exercicio.insertMany(exerciciosFormatados)
     console.log('Banco semeado com sucesso')
-    console.log(`${exerciciosPortugues.length} exercícios inseridos`)
+    console.log(`${exerciciosFormatados.length} exercícios inseridos`)
 
     await mongoose.disconnect()
     process.exit(0)
