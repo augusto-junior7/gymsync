@@ -130,8 +130,7 @@ export default function Dashboard() {
             <h2 className="text-2xl font-headline font-bold text-white flex items-center gap-2">
               <Calendar className="text-[#cafd00]" size={24} />
               Últimos Treinos
-            </h2>
-
+            </h2>     
             {historicoRecente.length > 0 ? (
               <div className="space-y-3">
                 {historicoRecente.map((sessao) => (

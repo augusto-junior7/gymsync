@@ -96,10 +96,17 @@ export const planosCompartilhados = async (req, res) => {
 // Suporta ordenação por ?ordem=recentes (padrão) ou ?ordem=salvos
 export const explorarPlanos = async (req, res) => {
   try {
+    const  {nome, ordem: ordemQuery} = req.query
+
     const ordem = req.query.ordem === 'salvos' ? { 'salvoPor': -1 } : { createdAt: -1 }
 
+
+    const filtro = {visibilidade:'publico'}
+    if (nome) {
+      filtro.nome = {$regex: new RegExp(nome,'i')}
+    }
     // Busca apenas planos públicos
-    const planos = await PlanoTreino.find({ visibilidade: 'publico' })
+    const planos = await PlanoTreino.find(filtro)
       .populate('usuarioId', 'nome username') // traz nome e username do criador
       .sort(ordem)
 

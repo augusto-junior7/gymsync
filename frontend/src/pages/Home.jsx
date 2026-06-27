@@ -63,7 +63,7 @@ export default function Home() {
 
         {/* Coluna do Modelo 3D (Direita) */}
         <model-viewer
-          src="/weight_gym__peso_academia_low_poly.glb"
+          src="/dumbell_rack.glb"
           alt="Modelo 3D de um peso de academia"
           camera-controls
           auto-rotate

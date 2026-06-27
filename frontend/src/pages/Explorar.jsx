@@ -1,49 +1,46 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Search,
   Filter,
   Dumbbell,
   ChevronRight,
+  Loader2,
+  Compass,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import TreinoCard from '@/components/TreinoCard'
-
-// Dados simulados para o design inicial (sem integração com a API por enquanto)
-const MOCK_PLANOS = [
-  {
-    _id: '1',
-    nome: 'Treino de Força Full Body',
-    usuarioId: { username: 'Augusto' },
-    exercicios: [1, 2, 3, 4, 5],
-    totalSalvamentos: 120,
-    createdAt: '2026-06-12T10:00:00Z',
-    nivel: 'Intermediário',
-  },
-  {
-    _id: '2',
-    nome: 'Hipertrofia - Peito e Tríceps',
-    usuarioId: { username: 'Matheus' },
-    exercicios: [1, 2, 3, 4, 5, 6],
-    totalSalvamentos: 85,
-    createdAt: '2026-06-10T14:30:00Z',
-    nivel: 'Avançado',
-  },
-  {
-    _id: '3',
-    nome: 'Iniciante Adaptação',
-    usuarioId: { username: 'Gabriel' },
-    exercicios: [1, 2, 3],
-    totalSalvamentos: 340,
-    createdAt: '2026-06-01T08:15:00Z',
-    nivel: 'Iniciante',
-  },
-]
+import api from '@/services/api'
 
 export default function Explorar() {
   const [searchTerm, setSearchTerm] = useState('')
   const [ordenacao, setOrdenacao] = useState('salvos') // 'salvos' ou 'recentes'
+  const [planos, setPlanos] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchPlanos = async () => {
+      setLoading(true)
+      try {
+        const response = await api.get(
+          `/planos/explorar?ordem=${ordenacao}&nome=${searchTerm}`
+        )
+        setPlanos(response.data.dados || [])
+      } catch (error) {
+        console.error('Erro ao buscar planos:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    // Debounce para evitar muitas requisições enquanto o usuário digita
+    const timer = setTimeout(() => {
+      fetchPlanos()
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm, ordenacao])
 
   return (
     <main className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-background">
@@ -137,27 +134,34 @@ export default function Explorar() {
         </section>
 
         {/* Grade de Treinos da Comunidade */}
-        <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {MOCK_PLANOS.map((plano) => {
-            // Adaptando o dado mockado para o formato que o card espera,
-            // se o banco retornar formatos diferentes
-            const treinoAdaptado = {
-              ...plano,
-              id: plano._id,
-              autor: plano.usuarioId.username,
-            }
-
-            return (
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="animate-spin text-[#cafd00]" size={32} />
+          </div>
+        ) : planos.length > 0 ? (
+          <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {planos.map((plano) => (
               <TreinoCard
-                key={treinoAdaptado.id}
-                treino={treinoAdaptado}
+                key={plano._id}
+                treino={plano}
                 isOwner={false}
                 showVisibilityBadge={false}
-                isSaved={false} // Lógica sua para checar se o usuário atual já salvou
+                isSaved={false} // Futuramente, você pode verificar se o usuário logado salvou este plano
               />
-            )
-          })}
-        </section>
+            ))}
+          </section>
+        ) : (
+          <div className="bg-accent/5 border border-border/30 rounded-2xl p-12 flex flex-col items-center justify-center text-center mt-8">
+            <Compass size={48} className="text-muted-foreground/50 mb-4" />
+            <h4 className="text-white font-headline font-bold text-xl mb-2">
+              Nenhum treino encontrado
+            </h4>
+            <p className="text-muted-foreground max-w-md">
+              Não encontramos treinos públicos com os critérios de busca
+              atuais. Tente uma busca diferente ou verifique mais tarde!
+            </p>
+          </div>
+        )}
       </div>
     </main>
   )
