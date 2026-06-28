@@ -1,66 +1,74 @@
-import { useState } from 'react'
-import { Search, Filter, Dumbbell } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Search, Filter, Dumbbell, Loader2 } from 'lucide-react'
 import ExercicioCard from '@/components/ExercicioCard'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-
-const MOCK_EXERCICIOS = [
-  {
-    id: 1,
-    nome: 'Supino Reto com Barra',
-    grupoMuscular: 'Peito',
-    dificuldade: 'Intermediário',
-  },
-  {
-    id: 2,
-    nome: 'Agachamento Livre',
-    grupoMuscular: 'Pernas',
-    dificuldade: 'Avançado',
-  },
-  {
-    id: 3,
-    nome: 'Rosca Direta',
-    grupoMuscular: 'Bíceps',
-    dificuldade: 'Iniciante',
-  },
-  {
-    id: 4,
-    nome: 'Puxada Frontal',
-    grupoMuscular: 'Costas',
-    dificuldade: 'Iniciante',
-  },
-  {
-    id: 5,
-    nome: 'Levantamento Terra',
-    grupoMuscular: 'Costas',
-    dificuldade: 'Avançado',
-  },
-  {
-    id: 6,
-    nome: 'Desenvolvimento com Halteres',
-    grupoMuscular: 'Ombros',
-    dificuldade: 'Intermediário',
-  },
-  {
-    id: 7,
-    nome: 'Elevação Pélvica',
-    grupoMuscular: 'Glúteos',
-    dificuldade: 'Intermediário',
-  },
-  {
-    id: 8,
-    nome: 'Prancha Abdominal',
-    grupoMuscular: 'Abdômen',
-    dificuldade: 'Iniciante',
-  },
-]
+import api from '@/services/api'
 
 export default function Exercicios() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [exercicios, setExercicios] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [skip, setSkip] = useState(0)
+  const LIMIT = 8
 
-  const filteredExercicios = MOCK_EXERCICIOS.filter((ex) =>
-    ex.nome.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const fetchExercicios = async (currentSkip, isLoadMore = false) => {
+    try {
+      if (isLoadMore) {
+        setLoadingMore(true)
+      } else {
+        setLoading(true)
+      }
+
+      const response = await api.get('/exercicios', {
+        params: {
+          q: searchTerm,
+          limit: LIMIT,
+          skip: currentSkip,
+        },
+      })
+
+      const data = response.data
+
+      if (isLoadMore) {
+        setExercicios((prev) => {
+          // Prevent duplicates just in case
+          const existingIds = new Set(prev.map(e => e._id || e.id))
+          const newExercicios = data.dados.filter(e => !existingIds.has(e._id || e.id))
+          return [...prev, ...newExercicios]
+        })
+      } else {
+        setExercicios(data.dados)
+      }
+
+      setHasMore(data.hasMore)
+    } catch (error) {
+      console.error('Erro ao buscar exercícios:', error)
+    } finally {
+      setLoading(false)
+      setLoadingMore(false)
+    }
+  }
+
+  // Effect for initial load and search term changes
+  useEffect(() => {
+    // Reset state for new search
+    setSkip(0)
+    // Debounce search slightly
+    const timeoutId = setTimeout(() => {
+      fetchExercicios(0)
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm])
+
+  const handleCarregarMais = () => {
+    const nextSkip = skip + LIMIT
+    setSkip(nextSkip)
+    fetchExercicios(nextSkip, true)
+  }
 
   return (
     <main className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-background">
@@ -103,11 +111,44 @@ export default function Exercicios() {
         </section>
 
         {/* Grade de Exercícios */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredExercicios.map((ex) => (
-            <ExercicioCard key={ex.id} exercicio={ex} />
-          ))}
-        </section>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="animate-spin text-[#cafd00]" size={40} />
+          </div>
+        ) : (
+          <>
+            {exercicios.length > 0 ? (
+              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {exercicios.map((ex) => (
+                  <ExercicioCard key={ex._id || ex.id} exercicio={ex} />
+                ))}
+              </section>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <Dumbbell className="text-muted-foreground/30 mb-4" size={64} />
+                <h3 className="text-xl font-bold text-white mb-2">Nenhum exercício encontrado</h3>
+                <p className="text-muted-foreground">
+                  Tente buscar por outro termo ou ajuste os filtros.
+                </p>
+              </div>
+            )}
+
+            {hasMore && exercicios.length > 0 && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  onClick={handleCarregarMais}
+                  disabled={loadingMore}
+                  className="bg-[#cafd00] text-[#4a5e00] hover:bg-[#beee00] font-headline font-bold rounded-xl h-12 px-8"
+                >
+                  {loadingMore ? (
+                    <Loader2 className="animate-spin mr-2" size={20} />
+                  ) : null}
+                  {loadingMore ? 'Carregando...' : 'Carregar mais'}
+                </Button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </main>
   )

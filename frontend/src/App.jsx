@@ -16,7 +16,6 @@ import Explorar from './pages/Explorar'
 import Treinos from './pages/Treinos'
 import Exercicios from './pages/Exercicios'
 import CriarTreino from './pages/CriarTreino'
-import Treino from './pages/Treino'
 
 function App() {
   return (
@@ -46,8 +45,6 @@ function App() {
           {/* Rotas Privadas (Sem Navbar no Mobile) */}
           <Route element={<SubpageLayout />}>
             <Route path="/criar-treino" element={<CriarTreino />} />
-            <Route path="/treino/" element={<Treino />} />
-            <Route path="/treino/:id" element={<Treino />} />
           </Route>
         </Route>
       </Routes>

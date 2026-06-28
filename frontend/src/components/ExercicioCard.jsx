@@ -13,11 +13,11 @@ export default function ExercicioCard({ exercicio }) {
         {exercicio.nome}
       </h3>
       <div className="flex items-center gap-2 mt-auto">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#cafd00] bg-[#cafd00]/10 px-2 py-1 rounded-md">
-          {exercicio.grupoMuscular}
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#cafd00] bg-[#cafd00]/10 px-2 py-1 rounded-md whitespace-nowrap overflow-hidden text-ellipsis">
+          {exercicio.grupoMuscular || (exercicio.musculosPrincipais && exercicio.musculosPrincipais[0]) || 'Músculo'}
         </span>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-accent/30 px-2 py-1 rounded-md">
-          {exercicio.dificuldade}
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-accent/30 px-2 py-1 rounded-md whitespace-nowrap overflow-hidden text-ellipsis">
+          {exercicio.dificuldade || exercicio.nivel || 'Nível'}
         </span>
       </div>
     </div>

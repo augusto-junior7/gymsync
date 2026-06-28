@@ -11,11 +11,26 @@ export const exercicios = async (req, res) => {
       filtro.musculosPrincipais = { $regex: new RegExp(req.query.grupo, 'i') }
     }
 
+    if (req.query.q) {
+      filtro.nome = { $regex: new RegExp(req.query.q, 'i') }
+    }
+
+    const limit = parseInt(req.query.limit) || 8;
+    const skip = parseInt(req.query.skip) || 0;
+
     // Busca no banco de dados os exercícios com esse filtro
     const exerciciosEncontrados = await Exercicio.find(filtro)
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1, _id: 1 })
+
+    const total = await Exercicio.countDocuments(filtro)
+
     return res.status(200).json({
       quantidade: exerciciosEncontrados.length,
+      total,
       dados: exerciciosEncontrados,
+      hasMore: skip + exerciciosEncontrados.length < total
     })
   } catch (error) {
     res.status(500).json({ mensagem: 'Erro interno ao buscar exercícios' })

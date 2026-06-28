@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   MoreVertical,
-  Play,
   Bookmark,
   BookmarkMinus,
   Share2,
@@ -117,19 +116,6 @@ export default function TreinoCard({
                 align="end"
                 className="w-48 bg-[#1e1e1e] border border-[#2a2a2a] rounded-lg shadow-xl text-white p-1 z-50"
               >
-                {/* Adicionado asChild e focus:outline-none no item Iniciar */}
-                <DropdownMenuItem
-                  className="cursor-pointer gap-2 font-medium focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
-                  asChild
-                >
-                  <Link
-                    to={`/treino?plano=${treino.id || treino._id}`} // Ajustado o link para igual ao botão principal
-                    className="flex items-center gap-2 w-full"
-                  >
-                    <Play size={16} className="text-[#cafd00]" /> Iniciar
-                  </Link>
-                </DropdownMenuItem>
-
                 {!isOwner && (
                   <DropdownMenuItem 
                     className="cursor-pointer gap-2 focus:bg-white/5 focus:text-white focus:outline-none rounded-md"
@@ -196,21 +182,6 @@ export default function TreinoCard({
         </div>
       </div>
 
-      {/* Botão de Ação Principal Isolado */}
-      <div
-        className="mt-auto relative z-10"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Link to={`/treino?plano=${treino.id || treino._id}`} className="block">
-          <Button
-            variant="outline"
-            className="w-full border-border/50 hover:border-[#cafd00] hover:text-[#cafd00] hover:bg-[#cafd00]/5 text-white font-headline font-bold flex justify-center items-center gap-2 transition-all"
-          >
-            <Play size={16} fill="currentColor" />
-            INICIAR
-          </Button>
-        </Link>
-      </div>
     </div>
 
       <TreinoModal

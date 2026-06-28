@@ -8,7 +8,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
-import { Dumbbell, PlayCircle, Clock, Info, Shield, User, X } from 'lucide-react'
+import { Dumbbell, Clock, Info, Shield, User, X } from 'lucide-react'
 
 // Componente interno para mostrar o exercício com suas séries
 function ExercicioPlanoCard({ exercicioPlano }) {
@@ -150,10 +150,6 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
           </div>
 
           <DrawerFooter className="pt-2 pb-6 border-t border-border/50 flex-shrink-0">
-            <Button className="w-full bg-[#cafd00] hover:bg-[#beee00] text-[#4a5e00] font-headline font-black uppercase text-base h-12 rounded-xl flex items-center justify-center gap-2">
-              <PlayCircle size={24} />
-              Iniciar Treino
-            </Button>
             <Button 
               variant="outline" 
               onClick={onClose}

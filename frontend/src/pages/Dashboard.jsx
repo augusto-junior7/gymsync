@@ -2,33 +2,19 @@ import { useState, useEffect } from 'react'
 import api from '@/services/api'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Activity, Calendar, Dumbbell, Flame, Plus, Search } from 'lucide-react'
-import SessaoCard from '@/components/SessaoCard'
+import { Activity, Calendar, Dumbbell, Flame, Plus, Search, Bookmark } from 'lucide-react'
+import TreinoCard from '@/components/TreinoCard'
 import ActionCard from '@/components/ActionCard'
 import StatCard from '@/components/StatCard'
 
-const historicoRecente = [
-  {
-    id: 's1',
-    nome: 'Hipertrofia A - Peito e Tríceps',
-    data: 'Ontem',
-    duracao: '55 min',
-  },
-  {
-    id: 's2',
-    nome: 'Costas & Bíceps Pesado',
-    data: '12 Out 2026',
-    duracao: '62 min',
-  },
-]
-
 export default function Dashboard() {
   const [usuario, setUsuario] = useState(null)
+  const [treinosSalvos, setTreinosSalvos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const fetchUsuario = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('gymsync_token')
         if (!token) {
@@ -39,9 +25,13 @@ export default function Dashboard() {
           return
         }
 
-        const response = await api.get('/usuarios/perfil')
+        const [userRes, salvosRes] = await Promise.all([
+          api.get('/usuarios/perfil'),
+          api.get('/planos/salvos')
+        ])
 
-        setUsuario(response.data)
+        setUsuario(userRes.data)
+        setTreinosSalvos(salvosRes.data.dados || [])
       } catch (err) {
         setError(
           'Falha ao carregar os dados do painel. Tente recarregar a página.'
@@ -52,7 +42,7 @@ export default function Dashboard() {
       }
     }
 
-    fetchUsuario()
+    fetchData()
   }, [])
 
   if (loading) {
@@ -115,40 +105,45 @@ export default function Dashboard() {
               Pronto para superar seus limites hoje?
             </p>
           </div>
-          <Link to="/treinos">
+          <Link to="/criar-treino">
             <Button className="h-14 px-8 bg-gradient-to-br from-[#cafd00] to-[#beee00] hover:from-[#beee00] hover:to-[#cafd00] text-[#4a5e00] font-headline font-black text-base tracking-widest uppercase rounded-xl shadow-[0_8px_32px_rgba(202,253,0,0.15)] transition-transform active:scale-95 flex items-center gap-2">
               <Plus strokeWidth={3} size={20} />
-              Iniciar Treino
+              Criar Treino
             </Button>
           </Link>
         </header>
 
         {/* Conteúdo Principal e Ações Rápidas */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Atividades Recentes */}
+          {/* Últimos Treinos Salvos */}
           <div className="lg:col-span-2 space-y-6">
             <h2 className="text-2xl font-headline font-bold text-white flex items-center gap-2">
-              <Calendar className="text-[#cafd00]" size={24} />
-              Últimos Treinos
+              <Bookmark className="text-[#cafd00]" size={24} />
+              Últimos Treinos Salvos
             </h2>     
-            {historicoRecente.length > 0 ? (
-              <div className="space-y-3">
-                {historicoRecente.map((sessao) => (
-                  <SessaoCard key={sessao.id} sessao={sessao} />
+            {treinosSalvos.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {treinosSalvos.slice(0, 3).map((treino) => (
+                  <TreinoCard 
+                    key={treino._id || treino.id} 
+                    treino={treino} 
+                    isOwner={false}
+                    showVisibilityBadge={false}
+                    isSaved={true}
+                  />
                 ))}
               </div>
             ) : (
               <div className="bg-accent/10 border border-border/50 rounded-3xl p-10 flex flex-col items-center justify-center text-center space-y-5 h-[300px]">
                 <div className="w-20 h-20 bg-background/50 rounded-full flex items-center justify-center border border-border/50">
-                  <Dumbbell className="text-muted-foreground/50" size={40} />
+                  <Bookmark className="text-muted-foreground/50" size={40} />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white font-headline">
-                    Nenhum treino registrado
+                    Nenhum treino salvo
                   </h3>
                   <p className="text-muted-foreground text-sm max-w-sm mt-2 mx-auto">
-                    Você ainda não registrou nenhum treino. Inicie um treino
-                    livre agora mesmo para começar a gerar estatísticas!
+                    Você ainda não salvou nenhum treino. Explore a comunidade e salve treinos interessantes!
                   </p>
                 </div>
               </div>
