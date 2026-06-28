@@ -19,5 +19,5 @@ router.post('/recuperacao-senha', solicitarRecuperacaoSenha)
 router.post('/redefinir-senha', redefinirSenha)
 
 router.get('/perfil', autenticar, getPerfil)
-
+router.patch('/perfil', autenticar, atualizar)
 export default router
