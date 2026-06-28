@@ -8,7 +8,8 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
-import { Dumbbell, Clock, Info, Shield, User, X } from 'lucide-react'
+import { Dumbbell, Clock, Info, Shield, User, X, Loader2 } from 'lucide-react'
+import api from '@/services/api'
 
 // Componente interno para mostrar o exercício com suas séries
 function ExercicioPlanoCard({ exercicioPlano }) {
@@ -27,7 +28,7 @@ function ExercicioPlanoCard({ exercicioPlano }) {
           </h4>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#cafd00] bg-[#cafd00]/10 px-2 py-1 rounded-md">
-              {exercicio.grupoMuscular || 'Geral'}
+              {exercicio.grupoMuscular || exercicio.musculosPrincipais?.[0] || 'Geral'}
             </span>
           </div>
         </div>
@@ -73,6 +74,8 @@ function ExercicioPlanoCard({ exercicioPlano }) {
 
 export default function TreinoModal({ isOpen, onClose, treino }) {
   const [isDesktop, setIsDesktop] = useState(false)
+  const [fullTreino, setFullTreino] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const checkIsDesktop = () => setIsDesktop(window.innerWidth >= 768)
@@ -81,10 +84,33 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
     return () => window.removeEventListener('resize', checkIsDesktop)
   }, [])
 
+  useEffect(() => {
+    if (isOpen && treino) {
+      const fetchDetalhes = async () => {
+        try {
+          setLoading(true)
+          const id = treino._id || treino.id
+          const res = await api.get(`/planos/${id}`)
+          setFullTreino(res.data)
+        } catch (error) {
+          console.error('Erro ao buscar detalhes do treino', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+      fetchDetalhes()
+    } else {
+      setFullTreino(null)
+    }
+  }, [isOpen, treino])
+
   if (!treino) return null
 
+  // Usamos o fullTreino se estiver carregado (pois ele tem os exercícios populados)
+  const dadosExibicao = fullTreino || treino
+
   // Ordena os exercícios pela ordem de execução
-  const exerciciosOrdenados = [...(treino.exercicios || [])].sort(
+  const exerciciosOrdenados = [...(dadosExibicao.exercicios || [])].sort(
     (a, b) => a.ordemExecucao - b.ordemExecucao
   )
 
@@ -100,10 +126,10 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
         <div className="mx-auto w-full max-w-md flex flex-col overflow-hidden">
           <DrawerHeader className="text-left relative flex-shrink-0">
             <DrawerTitle className="font-headline text-2xl font-black text-white uppercase pr-8">
-              {treino.nome}
+              {dadosExibicao.nome}
             </DrawerTitle>
             <DrawerDescription className="text-muted-foreground mt-2">
-              {treino.descricao || 'Sem descrição.'}
+              {dadosExibicao.descricao || 'Sem descrição.'}
             </DrawerDescription>
 
             <button 
@@ -114,16 +140,16 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
             </button>
 
             <div className="flex flex-wrap items-center gap-3 mt-4">
-              {treino.visibilidade && (
+              {dadosExibicao.visibilidade && (
                 <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground bg-accent/30 px-2.5 py-1.5 rounded-md">
                   <Shield size={14} />
-                  {treino.visibilidade}
+                  {dadosExibicao.visibilidade}
                 </div>
               )}
-              {treino.usuarioId?.nome && (
+              {dadosExibicao.usuarioId?.nome && (
                 <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#cafd00] bg-[#cafd00]/10 px-2.5 py-1.5 rounded-md">
                   <User size={14} />
-                  {treino.usuarioId.nome}
+                  {dadosExibicao.usuarioId.nome}
                 </div>
               )}
             </div>
@@ -136,7 +162,12 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
               Exercícios do Treino
             </h3>
             
-            {exerciciosOrdenados.length > 0 ? (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
+                <Loader2 className="animate-spin text-[#cafd00] mb-4" size={32} />
+                <p>Carregando exercícios...</p>
+              </div>
+            ) : exerciciosOrdenados.length > 0 ? (
               <div className="flex flex-col gap-3 pb-6">
                 {exerciciosOrdenados.map((exercicioPlano, index) => (
                   <ExercicioPlanoCard key={index} exercicioPlano={exercicioPlano} />

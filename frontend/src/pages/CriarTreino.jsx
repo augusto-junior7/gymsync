@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Save,
-  Search,
   Plus,
   Trash2,
   Clock,
@@ -16,13 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import MobileSubpageBar from '@/components/MobileSubpageBar'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '@/components/ui/drawer'
+import ExercicioModal from '@/components/ExercicioModal'
 import api from '@/services/api'
 
 export default function CriarTreino() {
@@ -37,53 +30,6 @@ export default function CriarTreino() {
 
   // -- ESTADOS DA BUSCA (DRAWER) --
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchResults, setSearchResults] = useState([])
-  const [isSearching, setIsSearching] = useState(false)
-
-  // Busca exercícios na API
-  const buscarExercicios = async (term) => {
-    setIsSearching(true)
-    try {
-      const res = await api.get('/exercicios/') 
-      // Filtragem local rápida (caso o backend não tenha ?q=term implementado)
-      // Ajuste para pegar a array correta se sua API retornar { dados: [...] }
-      const data = res.data.dados || res.data 
-      
-      if (term) {
-        const lowerTerm = term.toLowerCase()
-        const filtrados = data.filter((ex) => 
-          ex.nome.toLowerCase().includes(lowerTerm) || 
-          ex.musculosPrincipais?.some(m => m.toLowerCase().includes(lowerTerm))
-        )
-        setSearchResults(filtrados)
-      } else {
-        setSearchResults(data)
-      }
-    } catch (error) {
-      console.error('Erro ao buscar exercícios:', error)
-    } finally {
-      setIsSearching(false)
-    }
-  }
-
-  // Quando abre a busca e não tem termo, busca todos
-  useEffect(() => {
-    if (isSearchOpen && searchResults.length === 0) {
-      buscarExercicios('')
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSearchOpen])
-
-  // Delay de busca (debounce simples)
-  useEffect(() => {
-    if (!isSearchOpen) return
-    const timeout = setTimeout(() => {
-      buscarExercicios(searchTerm)
-    }, 500)
-    return () => clearTimeout(timeout)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, isSearchOpen])
 
   // -- MANIPULAÇÃO DE EXERCÍCIOS NO PLANO --
   const adicionarExercicio = (exercicioDb) => {
@@ -441,65 +387,11 @@ export default function CriarTreino() {
       />
 
       {/* Modal/Drawer de Busca de Exercícios */}
-      <Drawer open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-        <DrawerContent className="bg-[#1e1e1e] border-[#2a2a2a] max-h-[90vh]">
-          <div className="mx-auto w-full max-w-lg flex flex-col overflow-hidden h-[80vh]">
-            <DrawerHeader className="text-left border-b border-border/50 pb-4">
-              <DrawerTitle className="font-headline text-xl font-bold text-white uppercase">
-                Catálogo de Exercícios
-              </DrawerTitle>
-              <DrawerDescription>
-                Pesquise e selecione o exercício desejado.
-              </DrawerDescription>
-              
-              <div className="relative mt-4">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input 
-                  placeholder="Buscar por nome ou músculo..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-background/50 border-border/50 text-white h-12 rounded-xl"
-                />
-              </div>
-            </DrawerHeader>
-
-            <div className="p-4 overflow-y-auto flex-1 custom-scrollbar space-y-2">
-              {isSearching ? (
-                <div className="text-center py-10 text-muted-foreground font-medium">Buscando...</div>
-              ) : searchResults.length > 0 ? (
-                searchResults.map((ex) => (
-                  <div 
-                    key={ex._id || ex.id} 
-                    onClick={() => adicionarExercicio(ex)}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer transition-colors border border-transparent hover:border-border/30 group"
-                  >
-                    <div>
-                      <h4 className="text-white font-bold">{ex.nome}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] bg-accent/30 text-muted-foreground px-2 py-0.5 rounded-md font-bold uppercase">
-                          {ex.musculosPrincipais?.[0] || 'Geral'}
-                        </span>
-                        {ex.equipamento && (
-                          <span className="text-[10px] bg-background text-muted-foreground px-2 py-0.5 rounded-md font-bold uppercase border border-border/30">
-                            {ex.equipamento}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 text-[#cafd00] hover:text-[#cafd00] hover:bg-[#cafd00]/10">
-                      Adicionar
-                    </Button>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-10 text-muted-foreground font-medium">
-                  Nenhum exercício encontrado.
-                </div>
-              )}
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
+      <ExercicioModal 
+        isSearchOpen={isSearchOpen}
+        setIsSearchOpen={setIsSearchOpen}
+        onAddExercicio={adicionarExercicio}
+      />
 
     </main>
   )

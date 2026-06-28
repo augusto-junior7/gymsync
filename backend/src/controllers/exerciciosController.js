@@ -12,7 +12,10 @@ export const exercicios = async (req, res) => {
     }
 
     if (req.query.q) {
-      filtro.nome = { $regex: new RegExp(req.query.q, 'i') }
+      filtro.$or = [
+        { nome: { $regex: new RegExp(req.query.q, 'i') } },
+        { musculosPrincipais: { $regex: new RegExp(req.query.q, 'i') } }
+      ]
     }
 
     const limit = parseInt(req.query.limit) || 8;
