@@ -1,17 +1,27 @@
 import { useState, useEffect } from 'react'
-import { Search, Filter, Dumbbell, Loader2 } from 'lucide-react'
+import { Search, Filter, Dumbbell, Loader2, ArrowDownUp } from 'lucide-react'
 import ExercicioCard from '@/components/ExercicioCard'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import api from '@/services/api'
 
 export default function Exercicios() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [ordenacao, setOrdenacao] = useState('nome-asc') // 'nome-asc' ou 'nome-desc'
   const [exercicios, setExercicios] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [skip, setSkip] = useState(0)
+
   const LIMIT = 8
 
   const fetchExercicios = async (currentSkip, isLoadMore = false) => {
@@ -25,6 +35,7 @@ export default function Exercicios() {
       const response = await api.get('/exercicios', {
         params: {
           q: searchTerm,
+          ordem: ordenacao,
           limit: LIMIT,
           skip: currentSkip,
         },
@@ -34,9 +45,10 @@ export default function Exercicios() {
 
       if (isLoadMore) {
         setExercicios((prev) => {
-          // Prevent duplicates just in case
-          const existingIds = new Set(prev.map(e => e._id || e.id))
-          const newExercicios = data.dados.filter(e => !existingIds.has(e._id || e.id))
+          const existingIds = new Set(prev.map((e) => e._id || e.id))
+          const newExercicios = data.dados.filter(
+            (e) => !existingIds.has(e._id || e.id)
+          )
           return [...prev, ...newExercicios]
         })
       } else {
@@ -56,13 +68,16 @@ export default function Exercicios() {
   useEffect(() => {
     // Reset state for new search
     setSkip(0)
+    setExercicios([])
+    setHasMore(true)
+
     // Debounce search slightly
     const timeoutId = setTimeout(() => {
       fetchExercicios(0)
     }, 500)
 
     return () => clearTimeout(timeoutId)
-  }, [searchTerm])
+  }, [searchTerm, ordenacao])
 
   const handleCarregarMais = () => {
     const nextSkip = skip + LIMIT
@@ -82,7 +97,8 @@ export default function Exercicios() {
             Banco de Exercícios
           </h1>
           <p className="text-muted-foreground text-lg">
-            Consulte a execução correta, grupos musculares e adicione aos seus treinos.
+            Consulte a execução correta, grupos musculares e adicione aos seus
+            treinos.
           </p>
         </header>
 
@@ -101,13 +117,35 @@ export default function Exercicios() {
             />
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full md:w-auto h-14 px-5 bg-accent/20 border-border/50 rounded-xl text-white hover:text-[#cafd00] hover:border-[#cafd00]/50 transition-colors font-bold"
-          >
-            <Filter size={20} className="mr-2" />
-            Filtros
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full md:w-auto h-14 px-5 bg-accent/20 border-border/50 rounded-xl text-white hover:text-[#cafd00] hover:border-[#cafd00]/50 transition-colors font-bold"
+              >
+                <ArrowDownUp size={20} className="mr-2" />
+                {ordenacao === 'nome-asc'
+                  ? 'Organizar (A-Z)'
+                  : 'Organizar (Z-A)'}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 bg-[#1e1e1e] border-border/50 text-white">
+              <DropdownMenuLabel>Organizar por</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-border/30" />
+              <DropdownMenuItem
+                onClick={() => setOrdenacao('nome-asc')}
+                className="focus:bg-white/10 focus:text-white"
+              >
+                Nome (A-Z)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setOrdenacao('nome-desc')}
+                className="focus:bg-white/10 focus:text-white"
+              >
+                Nome (Z-A)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </section>
 
         {/* Grade de Exercícios */}
@@ -126,7 +164,9 @@ export default function Exercicios() {
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <Dumbbell className="text-muted-foreground/30 mb-4" size={64} />
-                <h3 className="text-xl font-bold text-white mb-2">Nenhum exercício encontrado</h3>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Nenhum exercício encontrado
+                </h3>
                 <p className="text-muted-foreground">
                   Tente buscar por outro termo ou ajuste os filtros.
                 </p>

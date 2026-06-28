@@ -2,12 +2,20 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Search,
-  Filter,
   Dumbbell,
   ChevronRight,
   Loader2,
   Compass,
+  ArrowDownUp,
 } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import TreinoCard from '@/components/TreinoCard'
@@ -15,18 +23,33 @@ import api from '@/services/api'
 
 export default function Explorar() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [ordenacao, setOrdenacao] = useState('salvos') // 'salvos' ou 'recentes'
+  const [ordenacao, setOrdenacao] = useState('salvos') // 'salvos', 'recentes', 'nome-asc', 'nome-desc'
   const [planos, setPlanos] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchPlanos = async () => {
       setLoading(true)
+      // A API busca por 'salvos' ou 'recentes'. A ordenação por nome será feita no frontend.
+      const apiOrder =
+        ordenacao === 'nome-asc' || ordenacao === 'nome-desc'
+          ? 'recentes'
+          : ordenacao
+
       try {
         const response = await api.get(
-          `/planos/explorar?ordem=${ordenacao}&nome=${searchTerm}`
+          `/planos/explorar?ordem=${apiOrder}&nome=${searchTerm}`
         )
-        setPlanos(response.data.dados || [])
+        let dados = response.data.dados || []
+
+        // Ordenação por nome no frontend
+        if (ordenacao === 'nome-asc') {
+          dados.sort((a, b) => a.nome.localeCompare(b.nome))
+        } else if (ordenacao === 'nome-desc') {
+          dados.sort((a, b) => b.nome.localeCompare(a.nome))
+        }
+
+        setPlanos(dados)
       } catch (error) {
         console.error('Erro ao buscar planos:', error)
       } finally {
@@ -61,11 +84,17 @@ export default function Explorar() {
             </p>
           </div>
 
-          <Link to="/exercicios" className="block group w-full md:w-auto shrink-0">
+          <Link
+            to="/exercicios"
+            className="block group w-full md:w-auto shrink-0"
+          >
             <div className="bg-accent/10 border border-border/50 rounded-2xl p-4 sm:p-5 flex items-center justify-between hover:bg-[#cafd00]/5 hover:border-[#cafd00]/50 transition-all duration-300 gap-4 md:min-w-[300px]">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-background border border-border/50 flex items-center justify-center group-hover:bg-[#cafd00]/20 group-hover:border-[#cafd00]/50 transition-all shrink-0">
-                  <Dumbbell className="text-muted-foreground group-hover:text-[#cafd00]" size={24} />
+                  <Dumbbell
+                    className="text-muted-foreground group-hover:text-[#cafd00]"
+                    size={24}
+                  />
                 </div>
                 <div>
                   <h4 className="text-white font-bold font-headline text-lg group-hover:text-[#cafd00] transition-colors">
@@ -76,7 +105,10 @@ export default function Explorar() {
                   </p>
                 </div>
               </div>
-              <ChevronRight className="text-muted-foreground group-hover:text-[#cafd00] shrink-0" size={20} />
+              <ChevronRight
+                className="text-muted-foreground group-hover:text-[#cafd00] shrink-0"
+                size={20}
+              />
             </div>
           </Link>
         </header>
@@ -99,37 +131,53 @@ export default function Explorar() {
           {/* Container refatorado para o mobile (quebra de linha automática) */}
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             {/* Ordenação Rápida */}
-            <div className="flex bg-accent/20 rounded-xl p-1 border border-border/50 w-full sm:w-max">
-              <button
-                onClick={() => setOrdenacao('salvos')}
-                className={`flex-1 sm:flex-none flex items-center justify-center px-2 sm:px-4 py-2.5 rounded-lg text-[13px] sm:text-sm font-bold transition-all whitespace-nowrap ${
-                  ordenacao === 'salvos'
-                    ? 'bg-[#cafd00] text-[#4a5e00] shadow-sm'
-                    : 'text-muted-foreground hover:text-white'
-                }`}
-              >
-                Mais Salvos
-              </button>
-              <button
-                onClick={() => setOrdenacao('recentes')}
-                className={`flex-1 sm:flex-none flex items-center justify-center px-2 sm:px-4 py-2.5 rounded-lg text-[13px] sm:text-sm font-bold transition-all whitespace-nowrap ${
-                  ordenacao === 'recentes'
-                    ? 'bg-[#cafd00] text-[#4a5e00] shadow-sm'
-                    : 'text-muted-foreground hover:text-white'
-                }`}
-              >
-                Mais Recentes
-              </button>
-            </div>
 
             {/* Filtros agora ocupa a largura toda no mobile e alinha-se à direita no desktop */}
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto h-auto min-h-[48px] md:h-14 px-5 bg-accent/20 border-border/50 rounded-xl text-white hover:text-[#cafd00] hover:border-[#cafd00]/50 transition-colors font-bold"
-            >
-              <Filter size={20} className="mr-2" />
-              Filtros
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto h-auto min-h-[48px] md:h-14 px-5 bg-accent/20 border-border/50 rounded-xl text-white hover:text-[#cafd00] hover:border-[#cafd00]/50 transition-colors font-bold"
+                >
+                  <ArrowDownUp size={20} className="mr-2" />
+                  {ordenacao === 'salvos'
+                    ? 'Mais Salvos'
+                    : ordenacao === 'recentes'
+                      ? 'Mais Recentes'
+                      : ordenacao === 'nome-asc'
+                        ? 'Nome (A-Z)'
+                        : 'Nome (Z-A)'}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-[#1e1e1e] border-border/50 text-white">
+                <DropdownMenuLabel>Organizar por</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border/30" />
+                <DropdownMenuItem
+                  onClick={() => setOrdenacao('salvos')}
+                  className="focus:bg-white/10 focus:text-white"
+                >
+                  Mais Salvos
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setOrdenacao('recentes')}
+                  className="focus:bg-white/10 focus:text-white"
+                >
+                  Mais Recentes
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setOrdenacao('nome-asc')}
+                  className="focus:bg-white/10 focus:text-white"
+                >
+                  Nome (A-Z)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setOrdenacao('nome-desc')}
+                  className="focus:bg-white/10 focus:text-white"
+                >
+                  Nome (Z-A)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </section>
 
@@ -157,8 +205,8 @@ export default function Explorar() {
               Nenhum treino encontrado
             </h4>
             <p className="text-muted-foreground max-w-md">
-              Não encontramos treinos públicos com os critérios de busca
-              atuais. Tente uma busca diferente ou verifique mais tarde!
+              Não encontramos treinos públicos com os critérios de busca atuais.
+              Tente uma busca diferente ou verifique mais tarde!
             </p>
           </div>
         )}

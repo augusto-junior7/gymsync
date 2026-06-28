@@ -1,31 +1,38 @@
 import mongoose from 'mongoose'
 import Exercicio from '../models/Exercicio.js'
+import PlanoTreino from '../models/PlanoTreino.js'
 
 export const exercicios = async (req, res) => {
   try {
     let filtro = {}
+    const {
+      grupo,
+      q,
+      limit: limitQuery,
+      skip: skipQuery,
+      ordem: ordemQuery,
+    } = req.query
 
     // verificação para ver se o frontend mandou o parametro "grupo" na URL
-    if (req.query.grupo) {
+    if (grupo) {
       // extraindo o pedido do filtro pela URL (GET com form HTML)
-      filtro.musculosPrincipais = { $regex: new RegExp(req.query.grupo, 'i') }
+      filtro.musculosPrincipais = { $regex: new RegExp(grupo, 'i') }
     }
 
-    if (req.query.q) {
-      filtro.$or = [
-        { nome: { $regex: new RegExp(req.query.q, 'i') } },
-        { musculosPrincipais: { $regex: new RegExp(req.query.q, 'i') } }
-      ]
+    if (q) {
+      filtro.nome = { $regex: new RegExp(q, 'i') }
     }
 
-    const limit = parseInt(req.query.limit) || 8;
-    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(limitQuery) || 8
+    const skip = parseInt(skipQuery) || 0
+
+    const ordem = ordemQuery === 'nome-desc' ? { nome: -1 } : { nome: 1 }
 
     // Busca no banco de dados os exercícios com esse filtro
     const exerciciosEncontrados = await Exercicio.find(filtro)
       .limit(limit)
       .skip(skip)
-      .sort({ createdAt: -1, _id: 1 })
+      .sort(ordem)
 
     const total = await Exercicio.countDocuments(filtro)
 
@@ -33,7 +40,7 @@ export const exercicios = async (req, res) => {
       quantidade: exerciciosEncontrados.length,
       total,
       dados: exerciciosEncontrados,
-      hasMore: skip + exerciciosEncontrados.length < total
+      hasMore: skip + exerciciosEncontrados.length < total,
     })
   } catch (error) {
     res.status(500).json({ mensagem: 'Erro interno ao buscar exercícios' })
