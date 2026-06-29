@@ -1,16 +1,30 @@
-# React + Vite
+# GymSync - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este diretório contém a interface de usuário da aplicação GymSync, construída com React e Vite.
 
-Currently, two official plugins are available:
+## Configuração de Ambiente (.env)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Para que o frontend consiga se comunicar com a API (backend), você precisa definir onde a API está hospedada.
 
-## React Compiler
+1. Na raiz da pasta `frontend`, crie uma cópia do arquivo `.env.example` e renomeie-a para `.env` (ou utilize o arquivo existente `.env.development` para rodar localmente).
+2. Adicione a seguinte variável de ambiente no arquivo:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Variável | Descrição | Exemplo |
+| :--- | :--- | :--- |
+| `VITE_API_URL` | Armazena a URL base da API do backend. **Atenção:** Coloque o endereço sem a barra (`/`) no final. | `http://localhost:3000` |
 
-## Expanding the ESLint configuration
+Exemplo de como o seu arquivo `.env` deve ficar:
+```env
+VITE_API_URL=http://localhost:3000
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Como rodar o projeto
+
+1. Instale as dependências:
+   ```bash
+   npm install
+   ```
+2. Inicie a aplicação em modo de desenvolvimento:
+   ```bash
+   npm run dev
+   ```

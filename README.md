@@ -1,10 +1,10 @@
 # GymSync - Trabalho Prático - Programação para Web (INE5646) 2026.1
 
 ### Grupo: 10
-### Alunos: Augusto Roberto Tavares Júnior (25100782), Gabriel Henrique Gonzaga da Silva Lino (25106020), Matheus Ribeiro do Livramento (25102375)
+### Alunos: Augusto Roberto Tavares Júnior (25100782), Gabriel Henrique Gonzaga da Silva Lino (25106020) e Matheus Ribeiro do Livramento (25102375)
 
 ## Descrição
-O GymSync é uma aplicação web desenvolvida para ser uma ferramenta útil para amadores, entusiastas e profissionais do mundo fitness. O foco da aplicação é fornecer uma experiência intuitiva e que faça sentido para o gerenciamento de rotinas de treinamento, facilitando o acompanhamento do progresso e a execução das atividades. 
+O GymSync é uma aplicação web full-stack desenvolvida para ser uma ferramenta útil para amadores, entusiastas e profissionais do mundo fitness. O foco da aplicação é fornecer uma experiência intuitiva e que faça sentido para o gerenciamento de rotinas de exercícios, facilitando o acompanhamento das atividades criadas pelo próprio usuário ou compartilhadas por terceiros. O frontend consome a API REST construída no backend para gerenciar esses dados, os usuários e as notificações.
 
 ## Tecnologias
 ### Stack MERN:
@@ -15,16 +15,11 @@ O GymSync é uma aplicação web desenvolvida para ser uma ferramenta útil para
 * NodeJS
 * MongoDB
 
-
 ## Funcionalidades
-### Mínimas:
-* Registrar o treino: será possível registrar treinos já realizados ou iniciar um treino instantaneamente. Nesse segundo caso, um temporizador começará, permitindo o registro de tempo de treino, descanso, séries, repetições e pesos; 
-* Barra de pesquisa de exercício com possibilidade de filtro por grupo muscular ou músculo específico; 
-* Cadastro e visualização de treinos compartilhados por outros usuários (como uma “comunidade” de compartilhamento de treinos); 
-  * Será possível manter um treino como "público" ou "privado". Mesmo privado, o treino poderá ser compartilhado apenas com usuários específicos, escolhidos pelo dono do treino (semelhante a um compartilhamento no Google Drive); 
-* Acompanhamento de progresso de cargas (dashboard) e dias frequentados através de dashboards. 
-
-### Adicionais (caso haja tempo hábil para desenvolvê-las):
-* Feed de Atividade: Um mural onde os usuários postam quando terminam um treino (estilo Strava). Os amigos podem "dar um pump" (curtir) ou comentar; 
-* Desafios em Grupo: Criar metas coletivas, como "Quem vai mais vezes à academia este mês" ou "Desafio de 100km de corrida somados pelo grupo"; 
-* Sistema de RPG/Nível: Conforme o usuário treina e bate metas, o perfil dele sobe de nível ou ele ganha badges (conquistas), como "Guerreiro da Madrugada" para quem treina antes das 7h. 
+* Cadastro e visualização de planos de treino, criando uma “comunidade” de compartilhamento de rotinas; 
+  * Será possível defini-los como "público" ou "privado". Mesmo privados, poderão ser compartilhados com usuários específicos, escolhidos pelo autor (semelhante ao Google Drive); 
+* Barra de pesquisa de rotinas públicas ("da comunidade") com possibilidade de ordenação por mais recentes, mais salvas, nome (crescente ou decrescente); 
+* Página listando todos os exercícios disponíveis;
+* Funcionalidade de "notificação": ao receber um pedido de compartilhamento, a pessoa será alertada:
+  * Ao clicar em "Aceitar", o plano é adicionado à biblioteca do usuário na aba de "Compartilhados comigo"; 
+  * Ao clicar em "Recusar", a solicitação é ignorada.
