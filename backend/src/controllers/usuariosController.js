@@ -199,7 +199,7 @@ export const solicitarRecuperacaoSenha = async (req, res) => {
     usuario.reset_senha_expiracao = validadeToken
     await usuario.save()
 
-    await enviarEmailRec(usuario.email, tokenTemporario)
+    await enviarEmailRecuperacaoSenha(usuario.email, tokenTemporario)
 
     res.status(200).json({ message: 'Link de recuperação enviado com sucesso' })
   } catch (error) {

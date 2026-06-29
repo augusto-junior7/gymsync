@@ -5,6 +5,7 @@ import conectarBanco from './src/database/db.js'
 import usuarioRoutes from './src/routes/usuario.routes.js'
 import exerciciosRoutes from './src/routes/exercicio.routes.js'
 import planoRoutes from './src/routes/plano.routes.js'
+import notificacaoRoutes from './src/routes/notificacao.routes.js'
 
 dotenv.config()
 
@@ -28,5 +29,6 @@ app.get('/', (req, res) => {
 app.use('/usuarios', usuarioRoutes)
 app.use('/exercicios', exerciciosRoutes)
 app.use('/planos', planoRoutes)
+app.use('/notificacoes', notificacaoRoutes)
 
 app.listen(port, () => console.log(`Servidor ativo na porta ${port}`))
