@@ -1,10 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Compass, Dumbbell, User, Bell } from 'lucide-react'
+import { obterNotificacoes, responderNotificacoes } from '@/services/api'
+import { Button } from '@/components/ui/button'
 
 export default function Navbar() {
   const location = useLocation()
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+  const [notificacao, setNotificacao] = useState([])
+
+  useEffect(() => {
+    const carregandoNotificacoes = async () => {
+      try {
+        const resosta = await obterNotificacoes()
+        setNotificacao(resosta.data)
+      } catch (error) {
+        console.error('Erro ao buscar notificações', error)
+      }
+    }
+    carregandoNotificacoes()
+  }, [])
+
+  const handleResponder = async (id, status) => {
+    try {
+      await responderNotificacoes(id, status)
+      setNotificacao((prev) => prev.filter((n) => n._id !== id))
+      alert(
+        status === 'aceito'
+          ? 'Convite aceito com sucesso!'
+          : 'Convite recusado.'
+      )
+    } catch (error) {
+      console.error('Erro ao responder convite', error)
+      alert('Erro ao processar a resposta.')
+    }
+  }
 
   const navLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -24,6 +54,7 @@ export default function Navbar() {
         CABEÇALHO (HEADER) - Fixo no topo
         =====================================================================
       */}
+
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-8 py-4 bg-[#0e0e0e]/80 backdrop-blur-lg border-b border-[#484847]/15">
         {/* Logo (Esquerda) */}
         <div className="flex flex-1 justify-start">
@@ -77,7 +108,55 @@ export default function Navbar() {
             }`}
           >
             <Bell className="w-7 h-7 md:w-6 md:h-6" />
+
+            {notificacao.length > 0 && (
+              <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+                {notificacao.length}
+              </span>
+            )}
           </button>
+
+          {isNotificationOpen && (
+            <div
+              className="absolute top-full right-0 mt-2 w-72 bg-[#1e1e1e] border border-[#2a2a2a] rounded-xl shadow-xl p-4 z-50"
+              onClick={(e) => e.stopPropagation()} // Impede que o clique feche o menu
+            >
+              <h4 className="text-white font-bold mb-3">Convites</h4>
+              {notificacao.length === 0 ? (
+                <p className="text-sm text-gray-400">
+                  Nenhum convite pendente.
+                </p>
+              ) : (
+                notificacao.map((n) => (
+                  <div
+                    key={n._id}
+                    className="mb-3 p-3 bg-white/5 rounded-lg border border-white/5"
+                  >
+                    <p className="text-xs text-white">
+                      <strong>{n.remetente?.nome}</strong> compartilhou o treino
+                      de "{n.planoId?.nome}" com você
+                    </p>
+                    <div className="flex gap-2 mt-2">
+                      <Button
+                        size="sm"
+                        className="flex-1 h-8 text-xs font-bold bg-[#cafd00] text-black hover:bg-[#cafd00]/80 rounded-xl border-0"
+                        onClick={() => handleResponder(n._id, 'aceito')}
+                      >
+                        Aceitar
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="flex-1 h-8 text-xs font-bold bg-transparent text-white border border-white/20 hover:border-white/50 hover:bg-white/5 rounded-xl"
+                        onClick={() => handleResponder(n._id, 'recusado')}
+                      >
+                        Recusar
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </header>
 

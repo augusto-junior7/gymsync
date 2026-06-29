@@ -50,7 +50,7 @@ export const enviarEmailNotificacao = async (
     to: emailDestino,
     subject: 'GymSync - Novo treino compartilhado com você',
     html: `<h2>Olá!</h2>
-      <p>O usuário ${nomeRemetente} acabou de compartilhar o treino ${nomeTreino} com você </p>
+      <p>O usuário ${nomeRemetente} acabou de compartilhar o treino de ${nomeTreino} com você </p>
       <p>Acesse o site para aceitar ou recusar</p>
       <a href="${linkLogin}" target="_blank"  style ="background-color: #cafd00;">Realizar Login</a>`,
   }

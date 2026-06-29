@@ -3,7 +3,6 @@ import Notificacao from '../models/Notificacao.js'
 import PlanoTreino from '../models/PlanoTreino.js'
 import Usuario from '../models/Usuario.js'
 import { enviarEmailNotificacao } from '../services/emailService.js'
-import { populate } from 'dotenv'
 
 export const compartilhamento = async (req, res) => {
   try {
@@ -24,15 +23,21 @@ export const compartilhamento = async (req, res) => {
     }
 
     // Verificação se o destinatário existe
-    const verificacaoDest = await Usuario.findById(destinatario)
+    const verificacaoDest = await Usuario.findOne({ email: destinatario })
     if (!verificacaoDest) {
       return res.status(404).json({ message: 'Destinatário não existe' })
+    }
+
+    if (verificacaoDest._id.toString() === id.toString()) {
+      return res
+        .status(400)
+        .json({ messga: 'Você não pode compartilhar um treino com você mesmo' })
     }
 
     // Verificação para ver se exite uma notificação com as mesmas info e com o status 'pendente
     const duplicidade = await Notificacao.findOne({
       remetente: id,
-      destinatario: destinatario,
+      destinatario: verificacaoDest._id,
       planoId: treinoId,
       status: 'pendente',
     })
@@ -46,21 +51,26 @@ export const compartilhamento = async (req, res) => {
 
     await Notificacao.create({
       remetente: id,
-      destinatario: destinatario,
+      destinatario: verificacaoDest._id,
       planoId: treinoId,
       tipo: 'compartilhamento_treino',
     })
 
     const remetente = await Usuario.findById(id)
 
-    enviarEmailNotificacao(
-      verificacaoDest.email,
-      remetente.nome,
-      planoTreino.nome
-    )
+    try {
+      await enviarEmailNotificacao(
+        verificacaoDest.email,
+        remetente.nome,
+        planoTreino.nome
+      )
+    } catch (error) {
+      console.error('Erro ao enviar e-mail de compartilhamento', error.message)
+    }
 
     res.status(201).json({ message: 'Notificação enviada com sucesso!' })
   } catch (error) {
+    console.error('Erro em compartilhar', error)
     res.status(500).json({
       message: 'Erro ao processar o compartilhamento',
       error: error.message,
@@ -74,7 +84,7 @@ export const listarNotificacoes = async (req, res) => {
 
     const notificacoes = await Notificacao.find({
       destinatario: idDest,
-      status: 'pendete',
+      status: 'pendente',
     })
       .populate('remetente', 'nome')
       .populate('planoId', 'nome')
@@ -97,12 +107,12 @@ export const resNotificacao = async (req, res) => {
       return res.status(404).json({ messga: 'Notificacao não existe' })
     }
 
-    if (!notificacao.destinatario.toString() == idRes.toString()) {
+    if (notificacao.destinatario.toString() !== idRes.toString()) {
       return res.status(403).json({ message: 'Convite invalido' })
     }
 
     if (notificacao.status !== 'pendente') {
-      return res.status(400).josn({ messga: 'Noificação já foi respondida' })
+      return res.status(400).json({ messga: 'Noificação já foi respondida' })
     }
 
     notificacao.status = req.body.status
@@ -119,6 +129,7 @@ export const resNotificacao = async (req, res) => {
 
     return res.status(200).json({ message: 'Resposta enviada com sucesso' })
   } catch (error) {
-    return res.status(500).josn({ messga: 'Erro ao responder convite' })
+    console.error('Erro em resnotificacao', error)
+    return res.status(500).json({ messga: 'Erro ao responder convite' })
   }
 }

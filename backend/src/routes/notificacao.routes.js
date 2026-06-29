@@ -12,6 +12,6 @@ router.get('/', autenticar, listarNotificacoes)
 
 router.post('/compartilhamento', autenticar, compartilhamento)
 
-router.patch('/responder', autenticar, resNotificacao)
+router.patch('/:id/responder/', autenticar, resNotificacao)
 
 export default router

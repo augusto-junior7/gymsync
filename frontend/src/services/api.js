@@ -17,4 +17,16 @@ api.interceptors.request.use(
   }
 )
 
+export const compartilhamentoTreino = async (dados) => {
+  return await api.post('/notificacoes/compartilhamento', dados)
+}
+
+export const obterNotificacoes = async () => {
+  return await api.get('/notificacoes')
+}
+
+export const responderNotificacoes = async (id, status) => {
+  return await api.patch(`/notificacoes/${id}/responder`, { status })
+}
+
 export default api
