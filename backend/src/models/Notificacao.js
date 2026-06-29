@@ -34,3 +34,5 @@ const notificacao = new mongoose.Schema(
 )
 
 const Notificacao = mongoose.model('Notificacao', notificacao)
+
+export default Notificacao

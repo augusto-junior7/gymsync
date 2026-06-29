@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import Usuario from '../models/Usuario.js'
 import crypto from 'crypto'
-import { enviarEmailRec } from '../services/emailService.js'
+import { enviarEmailRecuperacaoSenha } from '../services/emailService.js'
 
 // POST /usuarios/registrar
 export const registrar = async (req, res) => {
@@ -119,7 +119,7 @@ export const getPerfil = async (req, res) => {
 export const atualizar = async (req, res) => {
   try {
     const usuarioLogado = req.usuarioId //  Pegando o usuario logado
-    const camposAtualizaveis = ['nome', 'username', 'email', 'senha']
+    const camposAtualizaveis = ['nome', 'username', 'email', 'senha', 'senhaAtual']
     const dadosAtualizar = {}
 
     // Montando o obj de dadosAtualizar
@@ -161,8 +161,31 @@ export const atualizar = async (req, res) => {
 
     // criptografando nova senha
     if (dadosAtualizar.senha) {
-      const novasenha = await bcrypt.hash(dadosAtualizar.senha, 10)
-      dadosAtualizar.senha = novasenha
+      if (!dadosAtualizar.senhaAtual) {
+        return res
+          .status(400)
+          .json({
+            message: 'A senha atual é obrigatória para definir uma nova senha.',
+          })
+      }
+
+      const usuario = await Usuario.findById(usuarioLogado).select('+senha')
+      if (!usuario) {
+        return res.status(404).json({ message: 'Usuário não encontrado.' })
+      }
+
+      const senhaCorreta = await bcrypt.compare(
+        dadosAtualizar.senhaAtual,
+        usuario.senha
+      )
+      if (!senhaCorreta) {
+        return res
+          .status(401)
+          .json({ message: 'A senha atual está incorreta.' })
+      }
+
+      dadosAtualizar.senha = await bcrypt.hash(dadosAtualizar.senha, 10)
+      delete dadosAtualizar.senhaAtual // Não salvar a senha atual no banco
     }
 
     // Atualizamos os campos que recebemos do usuario no banco de dados

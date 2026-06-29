@@ -13,6 +13,7 @@ export default function Perfil() {
     username: '',
     email: '',
   })
+  const [senhaAtual, setSenhaAtual] = useState('')
   const [senha, setSenha] = useState('')
   const [confirmarSenha, setConfirmarSenha] = useState('')
   const [loading, setLoading] = useState(true)
@@ -57,6 +58,7 @@ export default function Perfil() {
     const dadosAtualizar = { ...usuario }
     if (senha) {
       dadosAtualizar.senha = senha
+      dadosAtualizar.senhaAtual = senhaAtual
     }
 
     try {
@@ -64,6 +66,7 @@ export default function Perfil() {
       setSuccess('Perfil atualizado com sucesso!')
       // Limpa os campos de senha após o sucesso
       setSenha('')
+      setSenhaAtual('')
       setConfirmarSenha('')
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao atualizar o perfil.')
@@ -137,9 +140,28 @@ export default function Perfil() {
 
         <div className="pt-4 border-t border-border/50 space-y-4">
           <p className="text-sm text-muted-foreground">
-            Deixe os campos abaixo em branco para manter sua senha atual.
+            Para alterar sua senha, preencha os campos abaixo. Sua senha atual é
+            necessária para confirmação.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="senhaAtual">
+                Senha Atual{' '}
+                {(senha || confirmarSenha) && (
+                  <span className="text-red-500 text-xs font-normal">
+                    (obrigatório para alterar a senha)
+                  </span>
+                )}
+              </Label>
+              <Input
+                id="senhaAtual"
+                type="password"
+                value={senhaAtual}
+                onChange={(e) => setSenhaAtual(e.target.value)}
+                required={!!senha || !!confirmarSenha}
+                placeholder="Sua senha atual"
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="senha">Nova Senha</Label>
               <Input
