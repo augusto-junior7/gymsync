@@ -15,9 +15,11 @@ export default function RedefiniSenha() {
   const [erro, setErro] = useState('')
   const [mensagem, setMensagem] = useState('')
 
+  // Função para impedir que o navegador recarega a pagina inteira a cada clique no botão
   const handleRedefinirSenha = async (e) => {
     e.preventDefault()
 
+    // Verificando se as senhas não se coincidem
     if (novaSenha !== confirmarSenha) {
       return setErro('As senhas não coincidem.')
     }
@@ -26,6 +28,7 @@ export default function RedefiniSenha() {
     setErro('')
 
     try {
+      // Chamando a api do backend
       await api.post(
         '/usuarios/redefinir-senha',
         { token: token, novaSenha: novaSenha },
@@ -48,18 +51,20 @@ export default function RedefiniSenha() {
     }
   }
   return (
+    // Estilização da pagina
     <main className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#cafd00]/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#ece856]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       <section className="w-full max-w-md flex flex-col space-y-12 relative z-10">
+        // Formulario para pegar a nova senha e confirmação de senha
         <form onSubmit={handleRedefinirSenha} className="space-y-8">
+          //Cabeçalho da Pagina de Redefinir Senha
           <header className="flex flex-col items-center space-y-2">
             <h1 className="font-headline font-black text-3xl tracking-tighter text-white">
               Criar Nova Senha
             </h1>
           </header>
-
           <div className="space-y-6">
             <div className="flex flex-col space-y-2">
               <Label className="text-xs font-bold text-muted-foreground tracking-widest px-1 uppercase">
@@ -86,7 +91,8 @@ export default function RedefiniSenha() {
               />
             </div>
           </div>
-
+          // Mensagem de sucesso se tu estiver certo, aparece verde senão
+          vermelho
           {mensagem && (
             <p className="text-green-500 text-sm font-medium text-center">
               {mensagem}
@@ -97,7 +103,7 @@ export default function RedefiniSenha() {
               {erro}
             </p>
           )}
-
+          //Botão de enviar a senha
           <Button
             type="submit"
             disabled={loading}
@@ -106,6 +112,7 @@ export default function RedefiniSenha() {
             {loading ? 'Enviando...' : 'Enviar'}
           </Button>
         </form>
+        //Rodapé do forms para redirecionar para a aba de login
         <footer className="pt-4 text-center">
           <Link
             to="/login"

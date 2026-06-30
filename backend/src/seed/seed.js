@@ -12,9 +12,11 @@ const __dirname = path.dirname(__filename)
 
 async function seed() {
   try {
+    // Faz a conexão com o banco de dados
     await mongoose.connect(process.env.MONGO_URI)
     console.log('MongoDB Atlas conectado')
 
+    // Pega onde está o json
     const caminhoJson = path.resolve(__dirname, './data/exercicios.json')
 
     // Lendo o JSON de exercícios

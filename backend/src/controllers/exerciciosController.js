@@ -49,6 +49,7 @@ export const exercicios = async (req, res) => {
 
 export const exerciciosId = async (req, res) => {
   try {
+    // Captura do id atraves da URL
     const { id } = req.params
 
     // Verificação se o ID é valido antes da busca no banco

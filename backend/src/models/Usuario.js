@@ -31,7 +31,7 @@ const usuarioSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 8, // senha deve ter pelo menos 8 caracteres
-      select: false,
+      select: false, // oculta a senha nas buscas
     },
     reset_senha_token: {
       // Cria um token temporario para redefinir a senha

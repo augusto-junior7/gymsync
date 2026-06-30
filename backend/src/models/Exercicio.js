@@ -5,7 +5,7 @@ const exercicioSchema = new mongoose.Schema(
     nome: {
       type: String,
       required: true,
-      trim: true,
+      trim: true, // Retira espaços vazios do começo e do fim 
     },
     forca: {
       type: String,

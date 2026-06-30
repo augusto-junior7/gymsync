@@ -119,11 +119,18 @@ export const getPerfil = async (req, res) => {
 export const atualizar = async (req, res) => {
   try {
     const usuarioLogado = req.usuarioId //  Pegando o usuario logado
-    const camposAtualizaveis = ['nome', 'username', 'email', 'senha', 'senhaAtual']
+    const camposAtualizaveis = [
+      'nome',
+      'username',
+      'email',
+      'senha',
+      'senhaAtual',
+    ]
     const dadosAtualizar = {}
 
     // Montando o obj de dadosAtualizar
     camposAtualizaveis.forEach((campo) => {
+      // percore cada campo do array
       if (req.body[campo]) {
         // verificando se o body tem o campo
         dadosAtualizar[campo] = req.body[campo] // insirindo os campos que vieram
@@ -142,6 +149,7 @@ export const atualizar = async (req, res) => {
         _id: { $ne: usuarioLogado },
       })
 
+      // Não permiti atualizar para um email que já está em uso por outra conta
       if (emailEmUso) {
         return res.status(400).json({ message: 'Email já cadastrado' })
       }
@@ -154,6 +162,7 @@ export const atualizar = async (req, res) => {
         _id: { $ne: usuarioLogado },
       })
 
+      // Não permiti atualizar username para um que já esta em uso por outra conta
       if (usernameEmUso) {
         return res.status(400).json({ message: 'Nome de usuário já em uso' })
       }
@@ -162,18 +171,18 @@ export const atualizar = async (req, res) => {
     // criptografando nova senha
     if (dadosAtualizar.senha) {
       if (!dadosAtualizar.senhaAtual) {
-        return res
-          .status(400)
-          .json({
-            message: 'A senha atual é obrigatória para definir uma nova senha.',
-          })
+        return res.status(400).json({
+          message: 'A senha atual é obrigatória para definir uma nova senha.',
+        })
       }
 
+      // Verifica se o usuario está na base
       const usuario = await Usuario.findById(usuarioLogado).select('+senha')
       if (!usuario) {
         return res.status(404).json({ message: 'Usuário não encontrado.' })
       }
 
+      // Verifica se a senha para atualizar é igual a senha anterior já salva no banco
       const senhaCorreta = await bcrypt.compare(
         dadosAtualizar.senhaAtual,
         usuario.senha
@@ -184,6 +193,7 @@ export const atualizar = async (req, res) => {
           .json({ message: 'A senha atual está incorreta.' })
       }
 
+      // Criptografa a nova senha e deleta a senha confirmação
       dadosAtualizar.senha = await bcrypt.hash(dadosAtualizar.senha, 10)
       delete dadosAtualizar.senhaAtual // Não salvar a senha atual no banco
     }
@@ -203,10 +213,13 @@ export const atualizar = async (req, res) => {
 
 export const solicitarRecuperacaoSenha = async (req, res) => {
   try {
+    // Capturado email do usuario
     const { email } = req.body
 
+    // Busca da conta do usuario no banco
     const usuario = await Usuario.findOne({ email: email })
 
+    // Verificação se o usuario tem conta cadastrada no banco
     if (!usuario) {
       return res.status(404).json({ message: 'Usuário não encontrado.' })
     }
@@ -222,6 +235,7 @@ export const solicitarRecuperacaoSenha = async (req, res) => {
     usuario.reset_senha_expiracao = validadeToken
     await usuario.save()
 
+    // Envio do email de recuperação de senha (contendo o token temporario na URL) atraves do service com nodemailer
     await enviarEmailRecuperacaoSenha(usuario.email, tokenTemporario)
 
     res.status(200).json({ message: 'Link de recuperação enviado com sucesso' })
@@ -234,19 +248,24 @@ export const solicitarRecuperacaoSenha = async (req, res) => {
 
 export const redefinirSenha = async (req, res) => {
   try {
+    // Catura do token enviado pelo frontend
     const { token, novaSenha } = req.body
 
+    // Busca do usuario atraves do token
     const usuario = await Usuario.findOne({
       reset_senha_token: token,
       reset_senha_expiracao: { $gt: Date.now() },
     })
 
+    // Se a data não bater, o token já expirou
     if (!usuario) {
       return res.status(400).json({ message: 'Token invalido ou expirado.' })
     }
 
+    // Criptogrfando nova senha cadastrada
     const senhaHash = await bcrypt.hash(novaSenha, 10)
 
+    // Atualizando o cadastro do usuario no banco e apagando o token temporario de redefinição de senha
     usuario.senha = senhaHash
     usuario.reset_senha_expiracao = undefined
     usuario.reset_senha_token = undefined

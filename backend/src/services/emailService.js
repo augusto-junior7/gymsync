@@ -3,27 +3,31 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+// Informaçõe de quem está enviando o email
 const transportador = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  family: 4,
-  secure: true,
-  connectionTimeout: 10000,
-  auth: {
+  host: 'smtp.gmail.com', // Quem é o remetente
+  port: 465, // Porta de escuta para o @gmail
+  family: 4, // Força a conexão em IPV4
+  secure: true, // ssl ativado
+  connectionTimeout: 10000, // Aumenta o tempo para o servico responder
+  auth: { // Autenticações do remetente
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 })
 
+// Carta do email
 export const enviarEmailRecuperacaoSenha = async (emailDestino, token) => {
   const URL_BASE = process.env.FRONTEND_URL
-  const linkRec = `${URL_BASE}/redefinir-senha/${token}`
+  const linkRec = `${URL_BASE}/redefinir-senha/${token}` // link que vai no corpo do email
 
+  // Campos do email
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: emailDestino,
-    subject: 'GymSync - Recuperação de Senha',
-    html: `
+    from: process.env.EMAIL_USER, // De
+    to: emailDestino, // Para
+    subject: 'GymSync - Recuperação de Senha', // Assunto
+    html: // Corpo do email
+    `
     <h2>Olá!</h2>
     <p>Recebemos seu pedido para redefinir a senha da sua conta.</p>
     <p>Clique no link abaixo para criar uma nova senha:</p>
@@ -31,6 +35,7 @@ export const enviarEmailRecuperacaoSenha = async (emailDestino, token) => {
     <p>Se você não fez esta solicitação, desconsidere este email</p>`,
   }
   try {
+    // Acionamento do serviço, enviaremail
     const info = await transportador.sendMail(mailOptions)
     console.log('Email enviado com sucesso', info.response)
     return true

@@ -2,17 +2,17 @@ import mongoose from 'mongoose'
 
 const notificacao = new mongoose.Schema(
   {
-    remetente: {
+    remetente: { // quem esta enviando 
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Usuario',
       required: true,
     },
-    destinatario: {
+    destinatario: { // quem vai receber
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Usuario',
       required: true,
     },
-    planoId: {
+    planoId: { // id do plano
       type: mongoose.Schema.Types.ObjectId,
       ref: 'PlanoTreino',
       required: true,
