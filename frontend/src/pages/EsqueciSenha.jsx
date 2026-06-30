@@ -21,7 +21,7 @@ export default function EsqueciSenha() {
       await api.post(
         '/usuarios/recuperacao-senha',
         { email },
-        { timeout: 5000 }
+        { timeout: 15000 }
       )
       setMensagem('Ação realizada com sucesso!')
       setErro('')
