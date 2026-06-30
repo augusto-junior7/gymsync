@@ -1,16 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Save,
-  Plus,
-  Trash2,
-  Clock,
-  Dumbbell,
-  Shield,
-  ShieldAlert,
-  ChevronUp,
-  ChevronDown,
-} from 'lucide-react'
+import { Save, Plus, Dumbbell, Shield, ShieldAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Search, Filter, Dumbbell, Loader2, ArrowDownUp } from 'lucide-react'
+import { Search, Dumbbell, Loader2, ArrowDownUp } from 'lucide-react'
 import ExercicioCard from '@/components/ExercicioCard'
 import {
   DropdownMenu,
