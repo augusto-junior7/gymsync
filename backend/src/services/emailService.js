@@ -5,7 +5,7 @@ dotenv.config()
 
 const transportador = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
+  port: 465,
   family: 4,
   secure: true,
   connectionTimeout: 10000,
