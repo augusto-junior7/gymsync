@@ -24,6 +24,7 @@ export default function Exercicios() {
 
   const LIMIT = 8
 
+  // Busca os exercícios no backend aplicando filtros de texto, ordenação e lidando com paginação
   const fetchExercicios = async (currentSkip, isLoadMore = false) => {
     try {
       if (isLoadMore) {
@@ -44,6 +45,7 @@ export default function Exercicios() {
       const data = response.data
 
       if (isLoadMore) {
+        // Ao carregar mais, concatena os itens novos verificando duplicatas pelo ID
         setExercicios((prev) => {
           const existingIds = new Set(prev.map((e) => e._id || e.id))
           const newExercicios = data.dados.filter(

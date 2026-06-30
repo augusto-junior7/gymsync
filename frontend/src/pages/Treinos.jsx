@@ -17,6 +17,7 @@ export default function Treinos() {
       try {
         setLoading(true)
 
+        // Busca as três listas de treinos simultaneamente para reduzir o tempo de carregamento da página
         const [meusPlanosRes, salvosRes, compartilhadosRes] = await Promise.all(
           [
             api.get('/planos/meus'),

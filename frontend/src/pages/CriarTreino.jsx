@@ -33,6 +33,7 @@ export default function CriarTreino() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   // -- MANIPULAÇÃO DE EXERCÍCIOS NO PLANO --
+  // Adiciona um exercício selecionado da busca ao plano atual, preenchendo com valores iniciais padrão
   const adicionarExercicio = (exercicioDb) => {
     const novoExercicio = {
       exercicioId: exercicioDb._id || exercicioDb.id,
@@ -59,6 +60,7 @@ export default function CriarTreino() {
   }
 
   // -- MANIPULAÇÃO DE SÉRIES --
+  // Adiciona uma nova série (repetição ou tempo) ao final de um exercício específico
   const adicionarSerie = (exercicioIndex, tipo) => {
     const atualizados = [...exerciciosPlano]
     const novaSerie =
@@ -104,6 +106,7 @@ export default function CriarTreino() {
   }
 
   // -- SALVAR PLANO --
+  // Formata os dados para o padrão esperado pelo backend (payload) e faz a requisição de criação
   const salvarPlano = async () => {
     if (!nome.trim()) return alert('Dê um nome ao seu treino.')
     if (exerciciosPlano.length === 0)

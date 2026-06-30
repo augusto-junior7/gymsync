@@ -14,10 +14,9 @@ export default function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const navigate = useNavigate()
 
+  // Lida com a submissão do formulário, faz a requisição de login e armazena o token
   const handleLogin = async (e) => {
     e?.preventDefault?.()
-
-    console.log('handleLogin called', { identificacao })
 
     if (!navigator.onLine) {
       setLoginError('Sem conexão. Verifique sua internet.')
@@ -38,6 +37,7 @@ export default function Login() {
       localStorage.setItem('gymsync_token', token)
       navigate('/dashboard')
     } catch (error) {
+      // Tratamento focado em diferentes cenários de falha (erro de API, timeout ou falha de rede)
       if (error.response) {
         setLoginError(error.response.data?.message || 'Erro no servidor')
       } else if (error.code === 'ECONNABORTED') {
