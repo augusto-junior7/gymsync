@@ -15,7 +15,7 @@ import api from '@/services/api'
 
 export default function Exercicios() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [ordenacao, setOrdenacao] = useState('nome-asc') // 'nome-asc' ou 'nome-desc'
+  const [ordenacao, setOrdenacao] = useState('nome-asc')
   const [exercicios, setExercicios] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -64,14 +64,11 @@ export default function Exercicios() {
     }
   }
 
-  // Effect for initial load and search term changes
   useEffect(() => {
-    // Reset state for new search
     setSkip(0)
     setExercicios([])
     setHasMore(true)
 
-    // Debounce search slightly
     const timeoutId = setTimeout(() => {
       fetchExercicios(0)
     }, 500)

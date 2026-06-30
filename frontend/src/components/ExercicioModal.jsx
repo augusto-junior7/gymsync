@@ -11,7 +11,11 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import api from '@/services/api'
 
-export default function ExercicioModal({ isSearchOpen, setIsSearchOpen, onAddExercicio }) {
+export default function ExercicioModal({
+  isSearchOpen,
+  setIsSearchOpen,
+  onAddExercicio,
+}) {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
@@ -22,10 +26,10 @@ export default function ExercicioModal({ isSearchOpen, setIsSearchOpen, onAddExe
       const response = await api.get('/exercicios', {
         params: {
           q: searchTerm,
-          limit: 50, // Aumentei o limite para garantir que exiba vários no modal
+          limit: 50, // Limite maior para garantir que exiba vários resultados no modal
         },
       })
-      
+
       const data = response.data.dados || []
       setSearchResults(data)
     } catch (error) {
@@ -37,14 +41,14 @@ export default function ExercicioModal({ isSearchOpen, setIsSearchOpen, onAddExe
 
   useEffect(() => {
     if (!isSearchOpen) return
-    
-    // Debounce search slightly
+
+    // Aplica debounce na busca para evitar múltiplas requisições
     const timeoutId = setTimeout(() => {
       fetchExercicios()
     }, 500)
-    
+
     return () => clearTimeout(timeoutId)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, isSearchOpen])
 
   return (
@@ -58,10 +62,13 @@ export default function ExercicioModal({ isSearchOpen, setIsSearchOpen, onAddExe
             <DrawerDescription>
               Pesquise e selecione o exercício desejado.
             </DrawerDescription>
-            
+
             <div className="relative mt-4">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input 
+              <Search
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
                 placeholder="Buscar por nome ou músculo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -72,11 +79,13 @@ export default function ExercicioModal({ isSearchOpen, setIsSearchOpen, onAddExe
 
           <div className="p-4 overflow-y-auto flex-1 custom-scrollbar space-y-2">
             {isSearching ? (
-              <div className="text-center py-10 text-muted-foreground font-medium">Buscando...</div>
+              <div className="text-center py-10 text-muted-foreground font-medium">
+                Buscando...
+              </div>
             ) : searchResults.length > 0 ? (
               searchResults.map((ex) => (
-                <div 
-                  key={ex._id || ex.id} 
+                <div
+                  key={ex._id || ex.id}
                   onClick={() => onAddExercicio(ex)}
                   className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer transition-colors border border-transparent hover:border-border/30 group"
                 >
@@ -93,7 +102,11 @@ export default function ExercicioModal({ isSearchOpen, setIsSearchOpen, onAddExe
                       )}
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 text-[#cafd00] hover:text-[#cafd00] hover:bg-[#cafd00]/10">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="opacity-0 group-hover:opacity-100 text-[#cafd00] hover:text-[#cafd00] hover:bg-[#cafd00]/10"
+                  >
                     Adicionar
                   </Button>
                 </div>

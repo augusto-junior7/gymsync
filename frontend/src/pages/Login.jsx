@@ -1,17 +1,17 @@
 import api from '@/services/api'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom' // Importando o useNavigate
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Eye, EyeOff } from 'lucide-react' // Importando os ícones
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function Login() {
   const [identificacao, setIdentificacao] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [loginError, setLoginError] = useState('')
-  const [mostrarSenha, setMostrarSenha] = useState(false) // Estado para visualizar a senha
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {

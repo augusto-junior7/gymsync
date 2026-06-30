@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react'
 import api from '@/services/api'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Activity, Calendar, Dumbbell, Flame, Plus, Search, Bookmark } from 'lucide-react'
+import { Plus, Search, Bookmark } from 'lucide-react'
 import TreinoCard from '@/components/TreinoCard'
 import ActionCard from '@/components/ActionCard'
-import StatCard from '@/components/StatCard'
 
 export default function Dashboard() {
   const [usuario, setUsuario] = useState(null)
@@ -27,7 +26,7 @@ export default function Dashboard() {
 
         const [userRes, salvosRes] = await Promise.all([
           api.get('/usuarios/perfil'),
-          api.get('/planos/salvos')
+          api.get('/planos/salvos'),
         ])
 
         setUsuario(userRes.data)
@@ -120,13 +119,13 @@ export default function Dashboard() {
             <h2 className="text-2xl font-headline font-bold text-white flex items-center gap-2">
               <Bookmark className="text-[#cafd00]" size={24} />
               Últimos Treinos Salvos
-            </h2>     
+            </h2>
             {treinosSalvos.length > 0 ? (
               <div className="flex flex-col gap-4">
                 {treinosSalvos.slice(0, 3).map((treino) => (
-                  <TreinoCard 
-                    key={treino._id || treino.id} 
-                    treino={treino} 
+                  <TreinoCard
+                    key={treino._id || treino.id}
+                    treino={treino}
                     isOwner={false}
                     showVisibilityBadge={false}
                     isSaved={true}
@@ -143,7 +142,8 @@ export default function Dashboard() {
                     Nenhum treino salvo
                   </h3>
                   <p className="text-muted-foreground text-sm max-w-sm mt-2 mx-auto">
-                    Você ainda não salvou nenhum treino. Explore a comunidade e salve treinos interessantes!
+                    Você ainda não salvou nenhum treino. Explore a comunidade e
+                    salve treinos interessantes!
                   </p>
                 </div>
               </div>

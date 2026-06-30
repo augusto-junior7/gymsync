@@ -13,7 +13,7 @@ import api from '@/services/api'
 
 // Componente interno para mostrar o exercício com suas séries
 function ExercicioPlanoCard({ exercicioPlano }) {
-  // Considerando que 'exercicioId' esteja populado com os dados do exercício
+  // Assume-se que 'exercicioId' esteja populado com os dados da API
   const exercicio = exercicioPlano.exercicioId || {}
 
   return (
@@ -28,7 +28,9 @@ function ExercicioPlanoCard({ exercicioPlano }) {
           </h4>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#cafd00] bg-[#cafd00]/10 px-2 py-1 rounded-md">
-              {exercicio.grupoMuscular || exercicio.musculosPrincipais?.[0] || 'Geral'}
+              {exercicio.grupoMuscular ||
+                exercicio.musculosPrincipais?.[0] ||
+                'Geral'}
             </span>
           </div>
         </div>
@@ -106,7 +108,7 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
 
   if (!treino) return null
 
-  // Usamos o fullTreino se estiver carregado (pois ele tem os exercícios populados)
+  // Prioriza fullTreino (se carregado) pois contém os exercícios populados
   const dadosExibicao = fullTreino || treino
 
   // Ordena os exercícios pela ordem de execução
@@ -115,8 +117,8 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
   )
 
   return (
-    <Drawer 
-      open={isOpen} 
+    <Drawer
+      open={isOpen}
       onOpenChange={(open) => {
         if (!open) onClose()
       }}
@@ -132,7 +134,7 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
               {dadosExibicao.descricao || 'Sem descrição.'}
             </DrawerDescription>
 
-            <button 
+            <button
               onClick={onClose}
               className="absolute right-0 top-0 opacity-70 hover:opacity-100 text-white rounded-full p-2 hover:bg-white/10 transition-colors cursor-pointer z-10"
             >
@@ -161,16 +163,22 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
               <Dumbbell size={20} className="text-[#cafd00]" />
               Exercícios do Treino
             </h3>
-            
+
             {loading ? (
               <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
-                <Loader2 className="animate-spin text-[#cafd00] mb-4" size={32} />
+                <Loader2
+                  className="animate-spin text-[#cafd00] mb-4"
+                  size={32}
+                />
                 <p>Carregando exercícios...</p>
               </div>
             ) : exerciciosOrdenados.length > 0 ? (
               <div className="flex flex-col gap-3 pb-6">
                 {exerciciosOrdenados.map((exercicioPlano, index) => (
-                  <ExercicioPlanoCard key={index} exercicioPlano={exercicioPlano} />
+                  <ExercicioPlanoCard
+                    key={index}
+                    exercicioPlano={exercicioPlano}
+                  />
                 ))}
               </div>
             ) : (
@@ -181,8 +189,8 @@ export default function TreinoModal({ isOpen, onClose, treino }) {
           </div>
 
           <DrawerFooter className="pt-2 pb-6 border-t border-border/50 flex-shrink-0">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={onClose}
               className="w-full h-12 border-border/50 text-white hover:bg-white/5 hover:text-white font-headline font-bold uppercase tracking-wider text-sm rounded-xl"
             >

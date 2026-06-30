@@ -2,13 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  PlusCircle,
-  Dumbbell,
-  Loader2,
-  Bookmark,
-  Share2,
-} from 'lucide-react'
+import { PlusCircle, Dumbbell, Loader2, Bookmark, Share2 } from 'lucide-react'
 import TreinoCard from '@/components/TreinoCard'
 import api from '@/services/api'
 
@@ -22,13 +16,15 @@ export default function Treinos() {
     const carregarTreinos = async () => {
       try {
         setLoading(true)
-        
-        const [meusPlanosRes, salvosRes, compartilhadosRes] = await Promise.all([
-          api.get('/planos/meus'),
-          api.get('/planos/salvos'),
-          api.get('/planos/compartilhados'),
-        ])
-        
+
+        const [meusPlanosRes, salvosRes, compartilhadosRes] = await Promise.all(
+          [
+            api.get('/planos/meus'),
+            api.get('/planos/salvos'),
+            api.get('/planos/compartilhados'),
+          ]
+        )
+
         setMeusPlanos(meusPlanosRes.data.dados || [])
         setTreinosSalvos(salvosRes.data.dados || [])
         setTreinosCompartilhados(compartilhadosRes.data.dados || [])
@@ -48,7 +44,7 @@ export default function Treinos() {
       <div className="fixed top-[-10%] left-[-5%] w-[40%] h-[40%] bg-[#cafd00]/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
       <div className="relative z-10 max-w-6xl mx-auto flex flex-col space-y-12 pb-20">
-        {/* Seção B: Gerenciamento de Treinos com TABS */}
+        {/* Gerenciamento de Treinos com TABS do SHADCN */}
         <section className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <h3 className="font-headline text-2xl font-bold tracking-tight text-white uppercase">
@@ -63,25 +59,21 @@ export default function Treinos() {
           </div>
 
           <Tabs defaultValue="meus-planos" className="w-full block">
-            {/* TabsList refatorado com GRID para quebrar em 2 linhas no mobile e 1 linha no desktop */}
             <TabsList className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-row bg-accent/20 border border-border/50 p-1.5 rounded-xl mb-6 w-full sm:w-max h-auto">
               <TabsTrigger
                 value="meus-planos"
-                // col-span-1 no mobile (ocupa metade), flex no desktop
                 className="col-span-1 sm:flex-none rounded-lg data-[state=active]:bg-[#cafd00] data-[state=active]:text-[#4a5e00] font-bold text-muted-foreground bg-transparent data-[state=inactive]:hover:bg-white/5 py-2 sm:py-2.5 px-1 sm:px-5 transition-all border-none text-[13px] sm:text-base whitespace-nowrap"
               >
                 Meus Planos
               </TabsTrigger>
               <TabsTrigger
                 value="salvos"
-                // col-span-1 no mobile (ocupa metade), flex no desktop
                 className="col-span-1 sm:flex-none rounded-lg data-[state=active]:bg-[#cafd00] data-[state=active]:text-[#4a5e00] font-bold text-muted-foreground bg-transparent data-[state=inactive]:hover:bg-white/5 py-2 sm:py-2.5 px-1 sm:px-5 transition-all border-none text-[13px] sm:text-base whitespace-nowrap"
               >
                 Salvos
               </TabsTrigger>
               <TabsTrigger
                 value="compartilhados"
-                // col-span-2 no mobile (ocupa a linha inteira embaixo), flex no desktop
                 className="col-span-2 sm:flex-none rounded-lg data-[state=active]:bg-[#cafd00] data-[state=active]:text-[#4a5e00] font-bold text-muted-foreground bg-transparent data-[state=inactive]:hover:bg-white/5 py-2 sm:py-2.5 px-1 sm:px-5 transition-all border-none text-[13px] sm:text-base whitespace-nowrap"
               >
                 Compartilhados comigo
@@ -110,10 +102,16 @@ export default function Treinos() {
                 </div>
               ) : (
                 <div className="bg-accent/5 border border-border/30 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                  <Dumbbell size={48} className="text-muted-foreground/50 mb-4" />
-                  <h4 className="text-white font-headline font-bold text-xl mb-2">Nenhum plano criado</h4>
+                  <Dumbbell
+                    size={48}
+                    className="text-muted-foreground/50 mb-4"
+                  />
+                  <h4 className="text-white font-headline font-bold text-xl mb-2">
+                    Nenhum plano criado
+                  </h4>
                   <p className="text-muted-foreground max-w-md">
-                    Você ainda não criou nenhum plano de treino. Crie o seu primeiro agora mesmo!
+                    Você ainda não criou nenhum plano de treino. Crie o seu
+                    primeiro agora mesmo!
                   </p>
                 </div>
               )}
@@ -142,10 +140,16 @@ export default function Treinos() {
                 </div>
               ) : (
                 <div className="bg-accent/5 border border-border/30 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                  <Bookmark className="text-muted-foreground/50 mb-4" size={48} />
-                  <h4 className="text-white font-headline font-bold text-xl mb-2">Nenhum treino salvo</h4>
+                  <Bookmark
+                    className="text-muted-foreground/50 mb-4"
+                    size={48}
+                  />
+                  <h4 className="text-white font-headline font-bold text-xl mb-2">
+                    Nenhum treino salvo
+                  </h4>
                   <p className="text-muted-foreground max-w-md">
-                    Explore a comunidade e salve treinos interessantes para acessá-los aqui.
+                    Explore a comunidade e salve treinos interessantes para
+                    acessá-los aqui.
                   </p>
                 </div>
               )}
@@ -174,10 +178,7 @@ export default function Treinos() {
                 </div>
               ) : (
                 <div className="bg-accent/5 border border-border/30 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                  <Share2
-                    size={48}
-                    className="text-muted-foreground/50 mb-4"
-                  />
+                  <Share2 size={48} className="text-muted-foreground/50 mb-4" />
                   <h4 className="text-white font-headline font-bold text-xl mb-2">
                     Nenhum treino compartilhado com você
                   </h4>
@@ -189,7 +190,6 @@ export default function Treinos() {
             </TabsContent>
           </Tabs>
         </section>
-
       </div>
     </main>
   )

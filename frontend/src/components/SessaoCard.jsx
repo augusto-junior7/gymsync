@@ -3,10 +3,7 @@ import { CheckCircle2, ChevronRight } from 'lucide-react'
 
 export default function SessaoCard({ sessao }) {
   return (
-    <Link
-      to={`/treinos/sessao/${sessao.id}`}
-      className="block group"
-    >
+    <Link to={`/treinos/sessao/${sessao.id}`} className="block group">
       <div className="bg-accent/10 border border-border/50 p-5 rounded-xl flex items-center justify-between hover:bg-accent/20 hover:border-[#cafd00]/30 transition-all duration-300">
         <div className="flex items-center gap-4 sm:gap-5">
           <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 bg-background border border-border/50 rounded-full flex items-center justify-center text-[#cafd00] group-hover:scale-110 transition-transform">

@@ -42,7 +42,7 @@ function App() {
             <Route path="/perfil" element={<Perfil />} />
           </Route>
 
-          {/* Rotas Privadas (Sem Navbar no Mobile) */}
+          {/* Rotas Privadas (Com navbar diferente: botão de 'voltar') */}
           <Route element={<SubpageLayout />}>
             <Route path="/criar-treino" element={<CriarTreino />} />
           </Route>

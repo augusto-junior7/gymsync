@@ -135,7 +135,7 @@ export default function TreinoCard({
               )}
             </div>
 
-            {/* Envolvemos o Dropdown num div com stopPropagation para isolar o clique */}
+            {/* Evita que o clique no menu feche ou abra o modal principal */}
             <div onClick={(e) => e.stopPropagation()}>
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
@@ -144,7 +144,6 @@ export default function TreinoCard({
                   </button>
                 </DropdownMenuTrigger>
 
-                {/* Removido o focus:outline-none daqui para você manter a sua borda azul! */}
                 <DropdownMenuContent
                   align="end"
                   className="w-48 bg-[#1e1e1e] border border-[#2a2a2a] rounded-lg shadow-xl text-white p-1 z-50"

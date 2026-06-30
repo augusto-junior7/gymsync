@@ -19,8 +19,8 @@ export default function MobileSubpageBar({ rightAction, onBack }) {
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 w-full px-4 pb-6 pt-3 bg-[#1a1a1a]/90 backdrop-blur-xl z-50 rounded-t-[24px] shadow-[0_-8px_32px_rgba(202,253,0,0.05)] border-t border-[#484847]/15 flex items-center justify-between">
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         onClick={handleBack}
         className="text-white hover:bg-white/5 font-bold h-12 rounded-xl px-4 flex items-center gap-1"
       >
@@ -28,11 +28,7 @@ export default function MobileSubpageBar({ rightAction, onBack }) {
         Voltar
       </Button>
 
-      {rightAction && (
-        <div>
-          {rightAction}
-        </div>
-      )}
+      {rightAction && <div>{rightAction}</div>}
     </div>
   )
 }
