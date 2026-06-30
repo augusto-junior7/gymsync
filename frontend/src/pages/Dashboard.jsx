@@ -2,9 +2,18 @@ import { useState, useEffect } from 'react'
 import api from '@/services/api'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Plus, Search, Bookmark } from 'lucide-react'
+import {
+  Activity,
+  Calendar,
+  Dumbbell,
+  Flame,
+  Plus,
+  Search,
+  Bookmark,
+} from 'lucide-react'
 import TreinoCard from '@/components/TreinoCard'
 import ActionCard from '@/components/ActionCard'
+import StatCard from '@/components/StatCard'
 
 export default function Dashboard() {
   const [usuario, setUsuario] = useState(null)
@@ -12,6 +21,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // Efeito para buscar os dados essenciais do dashboard (perfil e treinos salvos)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,6 +34,7 @@ export default function Dashboard() {
           return
         }
 
+        // Busca os dados do perfil do usuário e seus treinos salvos em paralelo para otimizar o carregamento
         const [userRes, salvosRes] = await Promise.all([
           api.get('/usuarios/perfil'),
           api.get('/planos/salvos'),
@@ -72,8 +83,10 @@ export default function Dashboard() {
     )
   }
 
+  // Extrai o primeiro nome do usuário para uma saudação mais pessoal
   const primeiroNome = usuario?.nome?.split(' ')[0] || 'Atleta'
 
+  // Função para determinar a saudação ("Bom dia", "Boa tarde", "Boa noite") com base na hora atual
   const getSaudacao = () => {
     const horaAtual = new Date().getHours()
     if (horaAtual >= 6 && horaAtual < 12) {

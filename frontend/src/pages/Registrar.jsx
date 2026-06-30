@@ -27,6 +27,7 @@ export default function Registrar() {
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false)
 
+  // Efeito para verificar se o usuário já está logado e redirecioná-lo
   useEffect(() => {
     try {
       const token = localStorage.getItem('gymsync_token')
@@ -40,6 +41,7 @@ export default function Registrar() {
 
   // --- Handlers com Validação em Tempo Real ---
 
+  // Valida o nome de usuário em tempo real para garantir o formato correto
   const handleUsernameChange = (e) => {
     const val = e.target.value
     setUsername(val)
@@ -54,6 +56,7 @@ export default function Registrar() {
     }
   }
 
+  // Valida a força da senha e a correspondência com a confirmação em tempo real
   const handleSenhaChange = (e) => {
     const val = e.target.value
     setSenha(val)
@@ -75,6 +78,7 @@ export default function Registrar() {
     }
   }
 
+  // Valida se a senha de confirmação corresponde à senha original
   const handleConfirmarSenhaChange = (e) => {
     const val = e.target.value
     setConfirmarSenha(val)
@@ -89,6 +93,7 @@ export default function Registrar() {
 
   // --- Submissão do Formulário ---
 
+  // Função principal para lidar com o registro do usuário
   const handleRegister = async (e) => {
     e?.preventDefault?.()
 
@@ -111,6 +116,7 @@ export default function Registrar() {
     setLoading(true)
     setRegisterError('')
 
+    // Tentativa de chamada à API para registrar o novo usuário
     try {
       await api.post(
         '/usuarios/registrar',
@@ -120,6 +126,7 @@ export default function Registrar() {
 
       navigate('/login')
     } catch (error) {
+      // Tratamento de diferentes tipos de erro (resposta do servidor, timeout, etc.)
       if (error.response) {
         setRegisterError(error.response.data?.message || 'Erro no servidor')
       } else if (error.code === 'ECONNABORTED') {

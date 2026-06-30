@@ -21,6 +21,7 @@ export default function Perfil() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  // Efeito para buscar os dados do perfil do usuário assim que a página carrega
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
@@ -39,11 +40,13 @@ export default function Perfil() {
     fetchUsuario()
   }, [])
 
+  // Handler genérico para atualizar o estado do usuário (nome, username, email)
   const handleChange = (e) => {
     const { name, value } = e.target
     setUsuario((prevState) => ({ ...prevState, [name]: value }))
   }
 
+  // Função para enviar as atualizações do perfil para a API
   const handleUpdate = async (e) => {
     e.preventDefault()
     if (senha && senha !== confirmarSenha) {
@@ -55,6 +58,7 @@ export default function Perfil() {
     setError('')
     setSuccess('')
 
+    // Monta o payload para a API, incluindo a nova senha apenas se ela foi preenchida
     const dadosAtualizar = { ...usuario }
     if (senha) {
       dadosAtualizar.senha = senha
@@ -75,6 +79,7 @@ export default function Perfil() {
     }
   }
 
+  // Função para fazer logout, removendo o token de autenticação
   const handleLogout = () => {
     localStorage.removeItem('gymsync_token')
     navigate('/login')

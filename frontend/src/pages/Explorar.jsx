@@ -27,6 +27,7 @@ export default function Explorar() {
   const [planos, setPlanos] = useState([])
   const [loading, setLoading] = useState(true)
 
+  // Efeito para buscar os planos públicos com base no termo de busca e na ordenação selecionada
   useEffect(() => {
     const fetchPlanos = async () => {
       setLoading(true)
@@ -42,7 +43,7 @@ export default function Explorar() {
         )
         let dados = response.data.dados || []
 
-        // Ordenação por nome no frontend
+        // A ordenação por nome é feita no frontend após receber os dados da API
         if (ordenacao === 'nome-asc') {
           dados.sort((a, b) => a.nome.localeCompare(b.nome))
         } else if (ordenacao === 'nome-desc') {
@@ -57,7 +58,7 @@ export default function Explorar() {
       }
     }
 
-    // Debounce para evitar muitas requisições enquanto o usuário digita
+    // Implementa um debounce: a busca só é executada 500ms após o usuário parar de digitar
     const timer = setTimeout(() => {
       fetchPlanos()
     }, 500)
